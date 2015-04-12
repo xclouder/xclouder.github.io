@@ -76,9 +76,9 @@
 <p>可以参照原来GridGraph的实现，主要将3d中xz坐标，换到xy坐标</p>
 <p>具体代码请参看附件。</p>
 <h3 id="2-实现GraphNode2D">2.实现GraphNode2D</h3><p>同上，直接继承GraphNode，并参考GridNode实现。</p>
-<h3 id="3-实现GridGraph2DEditor">3.实现GridGraph2DEditor</h3><p>在AstarPath组件的Inspector中，有各种Graph的可视化参数编辑，我们可以通过实现一个GraphEditor来为上面写的GridGraph2D添加一个可视化编辑器。<br><img src="img/1.png" alt=""></p>
-<p>在类的上面，添加如上图所示的Attribute，即可在AstarPath的Inspector中看到新建“Grid Graph 2D”的按钮：<br><img src="img/2.png" alt=""></p>
-<p>效果如下：<br><img src="img/3.png" alt=""></p>
+<h3 id="3-实现GridGraph2DEditor">3.实现GridGraph2DEditor</h3><p>在AstarPath组件的Inspector中，有各种Graph的可视化参数编辑，我们可以通过实现一个GraphEditor来为上面写的GridGraph2D添加一个可视化编辑器。<br><img src="/images/1.png" alt=""></p>
+<p>在类的上面，添加如上图所示的Attribute，即可在AstarPath的Inspector中看到新建“Grid Graph 2D”的按钮：<br><img src="/images/2.png" alt=""></p>
+<p>效果如下：<br><img src="/images/3.png" alt=""></p>
 <h3 id="4-实现DynamicGridObstacle2D">4.实现DynamicGridObstacle2D</h3><p>在原来DynamicGridObstacle基础上，改变坐标、并去掉高度检测。</p>
 <h3 id="5-实现FunnelModifier2D">5.实现FunnelModifier2D</h3><p>FunnelModifier是烟囱路径平滑算法，AstarPathFinding中，路径平滑是作为一个处理链存在的，即获得A*算法的初步路径后，可以经过多个路径平滑算法处理，最终得到更理想的路径。原来的FunnelModifier也不支持2D，需要修改坐标xz-&gt;xy。</p>
 

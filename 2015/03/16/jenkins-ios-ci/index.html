@@ -62,17 +62,17 @@
       
         <p>网络上关于iOS自动构建的文章不少，有使用XCode Bot的，也有使用jenkins搭建的。<br>XCode Bot是苹果官方Server套件里面的一个组件，界面比较友好，“苹果味”比较浓，但是功能比较简单。<br>Jenkins是一个开源的CI Server解决方案，有数目众多的插件，不局限于iOS项目的构建，支持集群、任务管理。<br>我两种方法都使用了一段时间，最后还是选择了jenkins。<br>写这篇文章的原因是，网络上关于jenkins iOS的文章都比较过时，jenkins XCode Plugin很久没有更新了，对新版的XCode，打包成ipa的部分已经不可用。下面记录了搭建过程：</p>
 <h3 id="jenkins的安装">jenkins的安装</h3><p>网上资料太多，这里略</p>
-<h3 id="jenkins项目设置">jenkins项目设置</h3><p>新建jenkins项目，为了后面配置方便，建议把项目名设置为XCode项目名称。比如XCode项目名为iOSTest，Xcode工程文件为iOSTest.xcproject，这里的项目名就填iOSTest<br><img src="/img/05031501.png" alt=""></p>
-<p>我这里使用了Git仓库，在源码管理这里，设置好仓库地址以及相应的账号<br><img src="/img/05031502.png" alt=""></p>
-<p>在“构建”步骤，添加一个“Execute shell”模块<br><img src="/img/05031503.png" alt=""></p>
+<h3 id="jenkins项目设置">jenkins项目设置</h3><p>新建jenkins项目，为了后面配置方便，建议把项目名设置为XCode项目名称。比如XCode项目名为iOSTest，Xcode工程文件为iOSTest.xcproject，这里的项目名就填iOSTest<br><img src="/images/05031501.png" alt=""></p>
+<p>我这里使用了Git仓库，在源码管理这里，设置好仓库地址以及相应的账号<br><img src="/images/05031502.png" alt=""></p>
+<p>在“构建”步骤，添加一个“Execute shell”模块<br><img src="/images/05031503.png" alt=""></p>
 <p>添加下面的脚本  </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="operator">-d</span> <span class="string">"<span class="variable">$&#123;WORKSPACE&#125;</span>/builds"</span> ]; <span class="keyword">then</span> rm -rf <span class="variable">$&#123;WORKSPACE&#125;</span>/builds; <span class="keyword">fi</span>;</span><br><span class="line">mkdir <span class="variable">$&#123;WORKSPACE&#125;</span>/builds</span><br><span class="line"></span><br><span class="line">xcodebuild -project <span class="variable">$&#123;WORKSPACE&#125;</span>/<span class="variable">$&#123;JOB_NAME&#125;</span>.xcodeproj -scheme <span class="string">"<span class="variable">$&#123;JOB_NAME&#125;</span>"</span> archive -archivePath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/archive DEBUG_INFORMATION_FORMAT=<span class="string">"dwarf"</span></span><br><span class="line"></span><br><span class="line">xcodebuild -exportArchive -exportFormat IPA -archivePath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/archive.xcarchive -exportPath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/<span class="variable">$&#123;JOB_NAME&#125;</span>.ipa -exportProvisioningProfile <span class="string">'XC Ad Hoc: *'</span></span><br></pre></td></tr></table></figure>
 <p>DEBUG_INFORMATION_FORMAT=”dwarf”表示不生成dsym文件，这样构建的时候会快一些。<br><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/xcodebuild.1.html" target="_blank" rel="external">这里是xcodebuild命令详细的说明</a>，大家可以根据需要添加，值得注意的是 -exportProvisioningProfile参数需要填写provision profile的名称，如“iOS Team ProvisioningProfile:*”</p>
-<p>在“构建后操作”中，添加一个“Archive the artifacts”模块<br><img src="/img/05031504.png" alt=""></p>
+<p>在“构建后操作”中，添加一个“Archive the artifacts”模块<br><img src="/images/05031504.png" alt=""></p>
 <p>用于存档的文件填写：builds/*.*<br>然后保存，Jenkins项目设置Done。</p>
-<h3 id="XCode项目设置">XCode项目设置</h3><p>在XCode项目中，需要把相应的Scheme设置为共享，并push修改到仓库。<br><img src="/img/05031505.png" alt="">  </p>
-<p><img src="/img/05031506.png" alt=""></p>
-<p>把Release配置的证书和Provision Profile安装到CI Server上<br><img src="/img/05031507.png" alt=""></p>
+<h3 id="XCode项目设置">XCode项目设置</h3><p>在XCode项目中，需要把相应的Scheme设置为共享，并push修改到仓库。<br><img src="/images/05031505.png" alt="">  </p>
+<p><img src="/images/05031506.png" alt=""></p>
+<p>把Release配置的证书和Provision Profile安装到CI Server上<br><img src="/images/05031507.png" alt=""></p>
 <p>执行构建任务，如果亮蓝灯，恭喜你成功啦</p>
 
       
