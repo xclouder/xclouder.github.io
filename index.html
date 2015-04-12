@@ -1,0 +1,651 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-04-06T23:20:21.000Z"><a href="/2015/04/07/uGUI-note/">2015-04-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/04/07/uGUI-note/">uGUI学习笔记</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>看Unity3D文档像看国内教课书一样，一些概念，不懂的时候看还是不懂，明白了以后再看，好像也没有说错。好几个做Unity3D的朋友跟我吐槽过U3D的文档质量，相比Apple贴心的技术文档相去甚远。</p>
+<p>话虽这么说，权威的资料当然还是官方的，建议先仔细读一遍，不懂的再往下读：<br><a href="http://docs.unity3d.com/Manual/UISystem.html" target="_blank" rel="external">http://docs.unity3d.com/Manual/UISystem.html</a></p>
+<p>网上的教程大多泛泛而谈，就不吐槽了。好在还找到了一篇比较好的解读，在此谢谢作者白猫。文章链接在下面<br><a href="http://www.cnblogs.com/whitecat/p/4159815.html" target="_blank" rel="external">http://www.cnblogs.com/whitecat/p/4159815.html</a></p>
+<p>uGUI里面AutoLayout比较特别，我就此详细描述一下，希望能减少“教科书”的理解障碍。</p>
+<h1 id="RectTransform的理解">RectTransform的理解</h1><p>UI元素有专门的RectTransform组件来描述元素的几何信息，继承于Transform，Inspector中其属性如下图。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-22cced0431fed13f.png" alt="RectTransform属性"></p>
+<h2 id="Anchors，锚点">Anchors，锚点</h2><p>我们首先需要认识Anchors。官网上的图片很好表达了Andhors的功能，请恕我实践下拿来主义。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-220e11e70a5def02.gif" alt="锚点全在中间的情况"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-0c15d344dc0dad1c.gif" alt="锚点全在右下角的情况"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-c2f23bcd628ef49d.gif" alt="锚点在两个角的情况"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-671094a181f26840.gif" alt="锚点分开的情况"></p>
+<p>善于观察的同学可能已经发现，不管什么情况，button的四个顶点到相应锚点的相对位置是不变的：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-daaf44f85a3e6000.png" alt="规律：button的四个顶点到相应锚点的相对位置是不变的"></p>
+<p>当4个锚点都在一起的时候，RectTransform会显示Pos X，Pos Y，Width，Height四个属性可供修改。<br><img src="http://upload-images.jianshu.io/upload_images/301341-dbe0f01f6d838000.png" alt="当4个锚点都在一起"></p>
+<p>当不在一起的时候，RectTransform可调整的属性会有变化。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-198c0e7bbc414831.png" alt="锚点不在一起的时候，Inspector中变化1"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-860dfe5e10e57a3b.png" alt="锚点不在一起的时候，Inspector中变化2"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-7f477aa3a395b010.png" alt="锚点不在一起的时候，Inspector中变化3"></p>
+<p>Anchors的Min和Max分别是正规化的值(从0到1)，表示占父RectTransform的百分比，下图中AnchorMin=(0.1,0.1)  AnchorMax=(0.9,0.9)</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/301341-9f65e0d13aecc3be.png" alt="AnchorMin、AnchorMax"></p>
+<h2 id="Pivot，UI的中心点">Pivot，UI的中心点</h2><p>UI元素的旋转和缩放是围绕pivot进行的。RectTransform组件中，Pivot属性是一个正规化的二维向量，用来描述中心点在本身矩形大小的位置。默认值为(0.5, 0.5)，即几何中心。</p>
+<p>以上是RectTransform可视化的编辑属性，实际上RectTransform类的属性是怎样的？查阅RectTransform的官方文档如下：</p>
+<p><a href="">anchoredPosition</a><br>The position of the pivot of this RectTransform relative to the anchor reference point.</p>
+<p><a href="">anchoredPosition3D</a><br>The 3D position of the pivot of this RectTransform relative to the anchor reference point.</p>
+<p><a href="">anchorMax</a><br>The normalized position in the parent RectTransform that the upper right corner is anchored to.</p>
+<p><a href="">anchorMin</a><br>The normalized position in the parent RectTransform that the lower left corner is anchored to.</p>
+<p><a href="">offsetMax</a><br>The offset of the upper right corner of the rectangle relative to the upper right anchor.</p>
+<p><a href="">offsetMin</a><br>The offset of the lower left corner of the rectangle relative to the lower left anchor.</p>
+<p><a href="">pivot</a><br>The normalized position in this RectTransform that it rotates around.</p>
+<p><a href="">rect</a><br>The calculated rectangle in the local space of the Transform.</p>
+<p><a href="">sizeDelta</a><br>The size of this RectTransform relative to the distances between the anchors.</p>
+<p>乍一看有点费解，这里有必要解释下：</p>
+<h4 id="anchoredPosition">anchoredPosition</h4><p>可以理解为Pivot点相对于Anchor reference点的位置。Anchor reference点，我是这样理解的：当四个anchors点在一起的时候，这个点就是anchor reference点；否则这四个点的中心点就是anchor reference点。<br>照这个推理，anchorMax和anchorMin的值将影响anchoredPosition的值。具体还需要demo研究来确认。[Bugfix]</p>
+<p>但可以确定的是，当一个UI元素不需要自动拉伸行为时，用anchoredPosition + sizeDelta来设置位置和大小是比较方便的方法。</p>
+<p>anchorMax、anchorMin和Inspector中的意义一致，需要注意的是，当UI元素不需要自动拉伸时，AnchorMax和AnchorMin是相等的。<br><img src="http://upload-images.jianshu.io/upload_images/301341-3f848986df9d0568.png" alt="AnchorMin与AnchorMax"></p>
+<p>UI元素需要自动拉伸时，使用anchorMax、anchorMin + offsetMax、offsetMin来设置UI的位置及大小会比较方便。<br>其中，anchorMax.x == anchorMin.x，height会自动拉伸，width固定不变。<br>anchorMax.y == anchorMin.y，width会自动拉伸，height固定不变。</p>
+<p>不知不觉已过凌晨1点，先介绍到这里。关于uGUI的更多内容，将在下一篇博文中继续，敬请期待。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-24T03:43:57.000Z"><a href="/2015/03/24/a-bug-in-Animator-Play/">2015-03-24</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/03/24/a-bug-in-Animator-Play/">Animator.Play的一个bug</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Animator.Play方法，官方文档解释的很简单：“Plays a state”，但是实际使用中会有个问题。<br>如下，在同一帧里连续两次调用Play播放不同的动画片段：</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">animator.<span class="keyword">Play</span>(<span class="string">"animation1"</span>);  </span><br><span class="line">animator.<span class="keyword">Play</span>(<span class="string">"animation2"</span>);</span><br></pre></td></tr></table></figure>
+<p>你猜最后播放的是哪个动画？<br>我猜你猜的是animation2，兄弟我们都被坑了:P</p>
+<p>结果是animation1被播放，这有点反人类，应该是个bug。我使用的版本是Unity3D 5.0.0p1</p>
+<p>照这个结果，很多动画播放逻辑需要注意了。比如我们自己有个状态机，在这个状态机里调用Animator.Play来控制动画播放。如果在一帧内有多个状态切换，则可能会先后面状态的动画没有播放的问题。举个栗子：  </p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Run</span> <span class="bash">-&gt; Idle</span></span><br></pre></td></tr></table></figure>
+<p>如果状态切换太快，则可能在Idle状态，却一直播放Run的动画。</p>
+<p>因为这个原因，状态切换最好放到下一帧。我们为状态机切换提供一个请求切换状态的接口，状态内部不能直接切换到下一个状态。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置下一帧想要切换的状态</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">SetWishingState</span><span class="params">(State state)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在帧的开始，切换到下一个状态</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">TranslateToWishingState</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-22T16:09:12.000Z"><a href="/2015/03/23/my-first-philosophy/">2015-03-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/03/23/my-first-philosophy/">《你的第一本哲学书》读后感</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于一点哲学基础没有的我，能看到这本书，实在是幸运。  </p>
+<p>书中围绕九个问题展开了思索和探讨。在这个世界生活了二十多年的我，偶尔有想到过其中一些问题，但苦于没有结果最终便放弃了，之后很少再触碰这些问题，因为感受不到思考他们的价值所在。那时我想，世界如此真实地摆在眼前，接受它吧。于是，对哲学的思考，麻木了好多年。</p>
+<p>对这些问题的忽视，直接的结果，就是我们被挤在人群中，丢失了方向、蹉跎了人生。</p>
+<p>阅读完这本哲学入门书，我重新燃起了对哲学的兴趣。因为，如果这些问题不想办法去明白、去理解，那我们活在这个世界上的意义是什么呢？人活着便是为了寻根。</p>
+<p>作为练习，我将列出书中提到的若干问题，并附上自己浅薄的感悟。</p>
+<h3 id="我们如何知道外部世界的存在？">我们如何知道外部世界的存在？</h3><blockquote>
+<p>如果你仔细思考，就会发现，你唯一可以确信存在的，就是在你自己心灵之内的东西。  </p>
+</blockquote>
+<p>我有印象，童年的某一段时期，我是个极端怀疑论者。因为谁也无法帮我证明外部世界真实地存在，我能感知的，只有自己在真实独立地思考。我有时会想，周围的人会不会都是机器人？我是否存在于一个被安排好的环境里，又是谁安排的呢？这些问题困扰了我很长时间，因为即使外部世界看起来再真实、毫无破绽，也无法证伪我的疑问。或许，原因在于，我作为人的感知能力有局限，在我的感知范围内，对同一个事物，可以有很多不同的角度去解释，而我们往往选择自己认为好的、或者对我们有益的方式。</p>
+<h3 id="我们如何知道他人心灵的存在？">我们如何知道他人心灵的存在？</h3><blockquote>
+<p>你唯一真正拥有的只是你自己的经验。如果你相信他人精神生活中发生的事情，这只能通过观察他们的生理构造和身体行为。</p>
+</blockquote>
+<p>其实这个问题和上个问题一样，你可以认为他人是有同样的心灵活动存在，因为大家都是人，身体构造、精神到肉体的反应看起来都差不多的。即使这样也无法说服怀疑论者，除非人能够直接感受到他人的精神活动，比如你打我一拳，能清楚深刻地感受到我有多痛。但这显然是做不到的，你只能根据我的表情或喊叫来判断我有多痛。</p>
+<p>现在人工智能技术飞速发展，机器人在各方面表现的越来越像人类。那么机器人是否有心灵呢？我们判断一个对象是否有心灵的标准又是什么呢？鱼、昆虫、草履虫，或者说树木、花儿，甚至说石头、大海、白云是否有意识呢？</p>
+<p>唯一能确定的是我自己有意识，这段文字是我经过思考后打出来的，而你看到这段文字可能会觉得我有意识，但你真的确定么。</p>
+<h3 id="什么样的不平等是不公正的？">什么样的不平等是不公正的？</h3><p>何为公正？公正指对于同一事件对于所有的人平等对待。  </p>
+<p>小时候常听到一句话——“人人生而平等”。现在看来，这句话容易让人误解。人人生而平等，可能更多地是从人性、伦理、尊严的角度去定义的。比如不能因为人的贵贱去践踏他人的尊严，不能有种族歧视和性别歧视。<br>然而说这个世界人与人之间应该完全平等，那是自欺欺人。有人生下来含着金钥匙，不愁吃穿，接受好的教育，接触的人大都是精英，成长环境决定了他一生所能达成的成就是一般人比不了的。而有的人出生就得为生计发愁，长期或一辈子都活在马斯诺金字塔的底层，更不用说思想、艺术上的追求和造诣，他们不是没有天赋和学习能力，而是没有机会和条件。  </p>
+<p>有的人天生丽质、聪颖过人，而有的人却长相平平、资质愚钝。  </p>
+<p>这些，公平么？  </p>
+<p>显然是不公平的，但也不是谁的错。就像沙漠寸草不生、雨林欣欣向荣，都遵循大自然的法则。  </p>
+<p>然而这种不公平，在道德伦理上，是大家所不愿见到的，我们可以努力去减少这种不公。比如政府发挥调控能力，多发展教育，让穷人的孩子也能接受良好教育；建设公共基础设施，让没有条件去健身房的人也能去公园跑步、打球；救济一些弱势群体，让他们也能看到生活的曙光等等。我想，这也是很多富人做慈善的主要动机，是进入到另一种生活境界的自我实现的方式。</p>
+<h3 id="死亡是否意味着终点？">死亡是否意味着终点？</h3><p>有些人恐惧死亡，因为害怕死了之后，再也体会不到活在世上的欢娱。有些人不畏惧死亡，因为相信每个人都会死，到时一切皆归尘土。<br>现在没有任何证据能够判断，我们死亡之后，是否会以另外一种形式（比如灵魂）存在，或者我们会去向何处（天堂或地狱？）。种种死亡之后的猜想，都如同科学诞生以前人们用神话来解释一些自然现象。或许在多年后，科学发展能够捕捉到一些证据，来推测人死之后到底变成了什么形态（另一种存在或虚无？），但在那之前，人类的种种试图延续生命的行为，都显得幼稚而可笑。各国帝王的陵墓、殉葬品，在我看来，更多表达的是人类贪婪和残忍的本性。</p>
+<p>书中提到一个问题，我觉得很有意思。</p>
+<blockquote>
+<p>在几百年后复活的人还是原来那个人吗？如果你死后被冻结起来，后来又给你的尸体解冻，也许那个醒来的人并不是你，而只是一个很像你的人，他有你过去生活的全部记忆。即使在你自己的身体上复活的是你本人，这也不是”死后生活”的本来意思。</p>
+</blockquote>
+<p>即使是今天的你，也可能对昨天的自己感到很陌生。</p>
+<p>对于生死，我们未知的太多。就我而言，与其猜测和担心根本看不透的生命终点，还不如把握好能感知的当下，多做一些有意义的事情。</p>
+<h3 id="生活的意义何在？">生活的意义何在？</h3><blockquote>
+<p>如果有人问你：“你活着到底是为了什么？”<br>你可以这么回答：“这么问毫无意义。如果说我根本不存在，或者我对万事万物都漠不关心，这也无关紧要。但是我的确存在，并且有我所关心的东西，这就够了。”</p>
+</blockquote>
+<p>我们当中的有些人倾向于把自己看的很重要，这是我们雄心壮志、为生活拼搏的动力来源之一。可是跳出来看，如果浮生若梦，万事无常，最终都归于尘土，或许这种重要感就有点荒唐了。</p>
+<p>人类的一切努力，如果跟永恒扯上关系，都显得没有意义。但是，我们没必要执着于永恒和不朽。放眼于我们存在着的几十年，若我喜欢钢琴的声音，能弹奏喜欢的曲子；若我喜欢世界各地的美景，能来一次环球旅行；若我喜欢宠物，能感受到它们依偎在我怀里对我的信赖；若我喜欢发明，能给世界带来革命性的产品；若我喜欢和家人在一起，能常常体会他们在身边的温馨；若我喜欢一个女孩，能跟她牵手同甘共苦说美丽情话……这些于我而言，就是生活的意义。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-15T16:08:05.000Z"><a href="/2015/03/16/jenkins-ios-ci/">2015-03-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/03/16/jenkins-ios-ci/">jenkins iOS自动构建</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>网络上关于iOS自动构建的文章不少，有使用XCode Bot的，也有使用jenkins搭建的。<br>XCode Bot是苹果官方Server套件里面的一个组件，界面比较友好，“苹果味”比较浓，但是功能比较简单。<br>Jenkins是一个开源的CI Server解决方案，有数目众多的插件，不局限于iOS项目的构建，支持集群、任务管理。<br>我两种方法都使用了一段时间，最后还是选择了jenkins。<br>写这篇文章的原因是，网络上关于jenkins iOS的文章都比较过时，jenkins XCode Plugin很久没有更新了，对新版的XCode，打包成ipa的部分已经不可用。下面记录了搭建过程：</p>
+<h3 id="jenkins的安装">jenkins的安装</h3><p>网上资料太多，这里略</p>
+<h3 id="jenkins项目设置">jenkins项目设置</h3><p>新建jenkins项目，为了后面配置方便，建议把项目名设置为XCode项目名称。比如XCode项目名为iOSTest，Xcode工程文件为iOSTest.xcproject，这里的项目名就填iOSTest<br><img src="/img/05031501.png" alt=""></p>
+<p>我这里使用了Git仓库，在源码管理这里，设置好仓库地址以及相应的账号<br><img src="/img/05031502.png" alt=""></p>
+<p>在“构建”步骤，添加一个“Execute shell”模块<br><img src="/img/05031503.png" alt=""></p>
+<p>添加下面的脚本  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="operator">-d</span> <span class="string">"<span class="variable">$&#123;WORKSPACE&#125;</span>/builds"</span> ]; <span class="keyword">then</span> rm -rf <span class="variable">$&#123;WORKSPACE&#125;</span>/builds; <span class="keyword">fi</span>;</span><br><span class="line">mkdir <span class="variable">$&#123;WORKSPACE&#125;</span>/builds</span><br><span class="line"></span><br><span class="line">xcodebuild -project <span class="variable">$&#123;WORKSPACE&#125;</span>/<span class="variable">$&#123;JOB_NAME&#125;</span>.xcodeproj -scheme <span class="string">"<span class="variable">$&#123;JOB_NAME&#125;</span>"</span> archive -archivePath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/archive DEBUG_INFORMATION_FORMAT=<span class="string">"dwarf"</span></span><br><span class="line"></span><br><span class="line">xcodebuild -exportArchive -exportFormat IPA -archivePath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/archive.xcarchive -exportPath <span class="variable">$&#123;WORKSPACE&#125;</span>/builds/<span class="variable">$&#123;JOB_NAME&#125;</span>.ipa -exportProvisioningProfile <span class="string">'XC Ad Hoc: *'</span></span><br></pre></td></tr></table></figure>
+<p>DEBUG_INFORMATION_FORMAT=”dwarf”表示不生成dsym文件，这样构建的时候会快一些。<br><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/xcodebuild.1.html" target="_blank" rel="external">这里是xcodebuild命令详细的说明</a>，大家可以根据需要添加，值得注意的是 -exportProvisioningProfile参数需要填写provision profile的名称，如“iOS Team ProvisioningProfile:*”</p>
+<p>在“构建后操作”中，添加一个“Archive the artifacts”模块<br><img src="/img/05031504.png" alt=""></p>
+<p>用于存档的文件填写：builds/*.*<br>然后保存，Jenkins项目设置Done。</p>
+<h3 id="XCode项目设置">XCode项目设置</h3><p>在XCode项目中，需要把相应的Scheme设置为共享，并push修改到仓库。<br><img src="/img/05031505.png" alt="">  </p>
+<p><img src="/img/05031506.png" alt=""></p>
+<p>把Release配置的证书和Provision Profile安装到CI Server上<br><img src="/img/05031507.png" alt=""></p>
+<p>执行构建任务，如果亮蓝灯，恭喜你成功啦</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-08T15:17:48.000Z"><a href="/2015/03/08/hp-bar-follow-player/">2015-03-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/03/08/hp-bar-follow-player/">让血条跟随角色</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>目前实现方案采用的是： 获取人物世界坐标 -&gt; 转换到UI层坐标 -&gt; 创建血条UI对象并指定位置显示。</p>
+<p>但是调试发现血条会抖动，看起来血条位置刷新不一致。</p>
+<p>检查脚本逻辑，发现相机跟随角色逻辑和血条刷新逻辑都在LateUpdate方法里，但是这里的执行顺序不明朗。<br>如果要获取正确的结果，逻辑和执行顺序应该是这样：  </p>
+<ol>
+<li>Player移动  </li>
+<li>Camera跟随移动  </li>
+<li>UI血条位置更新  </li>
+</ol>
+<p>那么就是说脚本的Update、LateUpdate执行顺序应该是这样：  </p>
+<ol>
+<li>Player移动脚本  </li>
+<li>CameraFollow脚本  </li>
+<li>HpDisplay脚本  </li>
+</ol>
+<p>脚本默认按加载顺序来决定Update执行顺序，我们可以到Edit &gt; Project Settings &gt; Script Execution Order里自定义顺序。如下图：<br><img src="img/4.png" alt=""></p>
+<p>图中”Default Time”是默认脚本的执行顺序，没有特别指定顺序的脚本，都在”Default Time”期间执行，他们之间的执行顺序由脚本加载时机决定。</p>
+<p>“Default Time”以上的脚本，执行更靠前；”Default Time”以后的脚本，在默认脚本之后执行。</p>
+<p>按上述机制重新调整脚本逻辑后，血条抖动问题得以解决。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-02-28T07:06:43.000Z"><a href="/2015/02/28/apathfinding-extension-2d/">2015-02-28</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/02/28/apathfinding-extension-2d/">AstarPathFinding Project的2D扩展</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>AstartPathFinding是Unity里一个非常高效的A*寻路插件，支持GridGraph、Navmeshes、PointGraph、动态障碍、可扩展等特性(特性列表：<a href="http://arongranberg.com/astar/features" target="_blank" rel="external">http://arongranberg.com/astar/features</a>)。</p>
+<p>可惜的是目前不支持2D，不过没关系，既然支持扩展，咱们可以自己实现一个2D扩展，顺便阅读源码学习学习(不得不赞一下作者，注释写的很全)。</p>
+<p>开始扩展之前，我们先通过阅读代码了解下这个插件的结构。<br>整个系统API由AstarPath类提供，寻路接口如下<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StartPath</span> <span class="params">(Path p, <span class="keyword">bool</span> pushToFront = <span class="keyword">false</span>)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这个接口是异步的，调用这个方法开始寻路后，路径的计算会经过5个状态：创建、等待计算、正在计算、返回等待、已返回。从Path类的PathStatus枚举属性可以看出来：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">enum</span> <span class="title">PathState</span> </span>&#123;</span><br><span class="line"><span class="constant">    Created</span> = <span class="number">0</span>,</span><br><span class="line"><span class="constant">    PathQueue</span> = <span class="number">1</span>,</span><br><span class="line"><span class="constant">    Processing</span> = <span class="number">2</span>,</span><br><span class="line"><span class="constant">    ReturnQueue</span> = <span class="number">3</span>,</span><br><span class="line"><span class="constant">    Returned</span> = <span class="number">4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回的路径会通过回调函数通知上层逻辑。</p>
+<p>A*寻路核心逻辑在AstarPath类的两个CalculatePaths方法中：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> IEnumerator CalculatePaths (System.<span class="keyword">Object</span> _threadInfo)</span><br><span class="line"><span class="keyword">void</span> CalculatePathsThreaded (System.<span class="keyword">Object</span> _threadInfo)</span><br></pre></td></tr></table></figure></p>
+<p>第一个是协同的版本，使用StartCorotine来调用，不使用额外的线程；第二个是多线程的版本，可以根据项目需要进行调优。</p>
+<p>Path是一个抽象类，用来将不同寻路算法进行封装，具体子类有：ABPath、ConstantPath、FleePath、FloodPath、FloodPathTracer、MultiTargetPath、RandomPath。</p>
+<p>Path计算过程中，会读取地图信息——NavGraph，最后得出的路径为GraphNode的列表。NavGraph是由扫描场景信息获取的。见AstarPath类中的Scan方法。</p>
+<p>寻路的算法，咱们直接延用ABPath就好，剩下还差一个2D的NavGraph。插件原有一个GridGraph，本是3D的，经测试旋转一下也能作为2D使用，但需要经过一些设置。而且相应的动态障碍组件DynamicGridObstacle还不支持2D。索性我们仿照GridGraph专门写一个GridGraph2D来支持2D。</p>
+<p>官方网站对扩展有个简单的文档，但似乎很久没更新了，新版的接口已经发生了改变。下面了记录我的实现过程：</p>
+<h3 id="1-实现GridGraph2D">1.实现GridGraph2D</h3><p>考虑到原有的GridGraph扩展起来并不方便，我这里让GridGraph2D直接继承自NavGraph，并实现IUpdatableGraph和IRaycastableGraph接口。</p>
+<p>几个关键的方法需要重写<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> ScanInternal (OnScanStatus statusCallback)</span><br><span class="line"><span class="comment">//这个方法扫描场景，将地图网格化，并记录每个格子是否可走(walkable)。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> GetNodes (GraphNodeDelegateCancelable del)</span><br><span class="line"><span class="comment">//获取地图的所有网格节点</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> UpdateArea (GraphUpdateObject o)</span><br><span class="line"><span class="comment">//对地图节点可行走状态进行局部刷新，实现这个才能支持动态障碍。</span></span><br></pre></td></tr></table></figure></p>
+<p>可以参照原来GridGraph的实现，主要将3d中xz坐标，换到xy坐标</p>
+<p>具体代码请参看附件。</p>
+<h3 id="2-实现GraphNode2D">2.实现GraphNode2D</h3><p>同上，直接继承GraphNode，并参考GridNode实现。</p>
+<h3 id="3-实现GridGraph2DEditor">3.实现GridGraph2DEditor</h3><p>在AstarPath组件的Inspector中，有各种Graph的可视化参数编辑，我们可以通过实现一个GraphEditor来为上面写的GridGraph2D添加一个可视化编辑器。<br><img src="img/1.png" alt=""></p>
+<p>在类的上面，添加如上图所示的Attribute，即可在AstarPath的Inspector中看到新建“Grid Graph 2D”的按钮：<br><img src="img/2.png" alt=""></p>
+<p>效果如下：<br><img src="img/3.png" alt=""></p>
+<h3 id="4-实现DynamicGridObstacle2D">4.实现DynamicGridObstacle2D</h3><p>在原来DynamicGridObstacle基础上，改变坐标、并去掉高度检测。</p>
+<h3 id="5-实现FunnelModifier2D">5.实现FunnelModifier2D</h3><p>FunnelModifier是烟囱路径平滑算法，AstarPathFinding中，路径平滑是作为一个处理链存在的，即获得A*算法的初步路径后，可以经过多个路径平滑算法处理，最终得到更理想的路径。原来的FunnelModifier也不支持2D，需要修改坐标xz-&gt;xy。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-02-06T11:11:41.000Z"><a href="/2015/02/06/-e5-b0-8f-e6-8a-80-e5-b7-a7-ef-bc-8c-e8-ae-a9-e9-a2-91-e7-8e-87-e9-99-90-e5-88-b6-e9-80-bb-e8-be-91-e6-9b-b4-e4-bc-98-e9-9b-85/">2015-02-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/02/06/-e5-b0-8f-e6-8a-80-e5-b7-a7-ef-bc-8c-e8-ae-a9-e9-a2-91-e7-8e-87-e9-99-90-e5-88-b6-e9-80-bb-e8-be-91-e6-9b-b4-e4-bc-98-e9-9b-85/">小技巧，让频率限制逻辑更优雅</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>很多时候，我们需要某些逻辑按一定频率执行，常见的写法会是这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">float</span> previousExecuteTime;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">float</span> frequenceLimit = <span class="number">1f</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (Time.time – previousExecuteTime &gt;= frequenceLimit)</span><br><span class="line">     &#123;</span><br><span class="line">         previousExecuteTime = time;</span><br><span class="line">         <span class="comment">//Do Something</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果这样的逻辑多了，会发现类似的代码散落在各个脚本里面重复。我们可以把这个逻辑判断抽象出来，放到一个名为TimeFence的类中:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[System.Serializable]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> TimeFence &#123;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//    [SerializeField]</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">float</span> frequenceLimit = <span class="number">1f</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TimeFence</span> <span class="params">(<span class="keyword">float</span> frequence)</span></span><br><span class="line">    </span>&#123;</span><br><span class="line">        frequenceLimit = frequence;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> previousExecuteTime;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">bool</span> <span class="title">IsPass</span><span class="params">(<span class="keyword">float</span> time)</span></span><br><span class="line">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (time – previousExecuteTime &gt;= frequenceLimit)</span><br><span class="line">        &#123;</span><br><span class="line">            previousExecuteTime = time;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让我们用TimeFense重构上面的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> TimeFense frequenceLimit = <span class="keyword">new</span> TimeFense(<span class="number">1f</span>);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (frequenceLimit.IsPass(Time.time))</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="comment">//Do Something</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在Inspector中，可以直接修改frequenceLimit的值</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-01-30T09:58:07.000Z"><a href="/2015/01/30/ngui-sprite-e6-8b-89-e4-bc-b8-e8-be-b9-e7-bc-98-e8-99-9a-e5-8c-96-e9-97-ae-e9-a2-98/">2015-01-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/01/30/ngui-sprite-e6-8b-89-e4-bc-b8-e8-be-b9-e7-bc-98-e8-99-9a-e5-8c-96-e9-97-ae-e9-a2-98/">NGUI Sprite拉伸边缘虚化问题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>项目里有个需求，需要在某个UI元素下面放置一个纯色的下划线，我使用的2x2的白色方块，然后进行拉伸实现。<br>但是问题来了，当我把这个方块加入图集中后，创建的UISprite看上去是这个样子：<br><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/08331697-70BB-4638-AE4D-AC543A3FF79A.png" alt=""></p>
+<p>说好的纯色呢？</p>
+<p>Google一番未果，于是跑到NGUI官方论坛上问了一下，第二天就有了回复。原来我的UISprite是在图集中，而生成图集的时候，默认使用的Filter Mode 是Trilinear，这种线性插值导致渲染时会和周围的像素“渗透”。如果把图集的Filter Mode设置成Point，就没有这个问题了。</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/282BD608-73DD-4788-8B9E-97BAE9DF865B.jpg" alt=""></p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/319285CF-64CD-4211-BFC3-DFDBF3A9D522.png" alt="319285CF 64CD 4211 BFC3 DFDBF3A9D522"></p>
+<p>但是设置成Point会强制要求同一个图集里的UISprite都使用这个模式，可能会影响效果。<br>一个折衷的方案是，把这类素材放在单独的图集里，但这样会增加DrawCall。<br>更好的方法是Sprite仍在原来图集中，使用Sprite的Sliced模式，<br><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/Untitled_-_TestNGUI_-_PC__Mac___Linux_Standalone1.png" alt=""><br>并给Sprite设置一个1px的边框<br><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/Untitled_-_TestNGUI_-_PC__Mac___Linux_Standalone.png" alt=""><br>这样图片能正常显示和拉伸了。这种方案性能会更好。</p>
+<h3 id="【Tips】">【Tips】</h3><p>关于FilterMode，它的意义是：<br>当该纹理由于3D变换进行拉伸时，它将如何被过滤插值。共有三种选择：<br>| FilterMode | 意义 |<br>|:—————:| —— |<br>| Point | 单点插值，纹理将变得块状化（blocky up close）|<br>| Bilinear | 双线性插值，纹理将变得模糊（blurry up close）|<br>| Trilinear | 三线性插值，类似Bilinear，但是纹理还会在不同的mip水平之间（between the different mip levels）进行模糊 |</p>
+<h3 id="【参考】">【参考】</h3><p><a href="http://www.tasharen.com/forum/index.php?topic=12439.msg56762#msg56762" target="_blank" rel="external">http://www.tasharen.com/forum/index.php?topic=12439.msg56762#msg56762</a><br><a href="http://docs.unity3d.com/ScriptReference/FilterMode.html" target="_blank" rel="external">http://docs.unity3d.com/ScriptReference/FilterMode.html</a><br><a href="http://en.wikipedia.org/wiki/Texture_filtering" target="_blank" rel="external">http://en.wikipedia.org/wiki/Texture_filtering</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-01-13T11:39:34.000Z"><a href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">2015-01-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">寻路算法介绍</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近开展的新项目决定加入自动寻路的特性，以前一直觉得寻路是一个很神秘的东西，这次终于有机会揭开神秘的面纱，高兴。</p>
+<p>网络上搜索寻路算法，首先映入眼帘的便是满屏的A*算法，可见这方面的资料已经非常多了。以下我就从项目实际需求出发，综合整理下这方面的资料，给大家节省点搜索的时间。</p>
+<h3 id="算法原理">算法原理</h3><p>关于A*算法的介绍，Patrick Lester有篇很好的文章，深入浅出：<br><a href="http://www.policyalmanac.org/games/aStarTutorial.htm" target="_blank" rel="external">http://www.policyalmanac.org/games/aStarTutorial.htm</a> </p>
+<p>另外国人也有不错的翻译：<br><a href="http://blog.csdn.net/crayondeng/article/details/12342989" target="_blank" rel="external">http://blog.csdn.net/crayondeng/article/details/12342989</a><br><a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html</a></p>
+<p>这是简单的A<em>算法，为了验证下效果，我们将游戏世界划分为网格，在这些网格上使用上面的A</em>算法，其结果如下图：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/astar_simple.png" alt="astar_simple.png" title="astar_simple.png"></p>
+<p>图中绿色线为路径，这走位很风骚，但显然不是我们想要的结果：两点之间线段最短嘛。</p>
+<p>为了得到一个看起来合理的路径，要对上一步的到得结果进行处理，这个过程叫做路径平滑。</p>
+<h3 id="路径平滑">路径平滑</h3><p>关于路径平滑算法也有不少文章进行了描述，不过google“路径平滑算法”结果较少，而“path smoothing algorithm”则能得到不少有价值的结果。</p>
+<p>不少unity寻路插件都使用到了烟囱平滑算法，这篇文章图文并茂的介绍了算法的过程：</p>
+<p><a href="http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html" target="_blank" rel="external">http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html</a></p>
+<p>使用路径平滑后的寻路结果如下：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/funnel_modify.png" alt="NewImage" title="funnel_modify.png"></p>
+<p>如果要实现更加真实的路径平滑，还有很多因素需要考虑，比如当前速度、加速度、方向、最大转弯角度等等，这篇文章介绍了怎样获得更真实的路径结果：</p>
+<p><a href="http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php" target="_blank" rel="external">http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php</a></p>
+<h3 id="部分寻路">部分寻路</h3><p>在游戏中，用户指定的目的地有可能是一个不可达的区域，这时传统A*算法是找不到路径的。可是用户操作了什么都不做会很奇怪，比较好的做法是寻路到离用户指定地点最近的可达点，如下图：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/Door2_unity_-_hero_-_iPhone__iPod_Touch_and_iPad.png" alt="Door2 unity hero iPhone iPod Touch and iPad" title="Door2_unity_-_hero_-_iPhone__iPod_Touch_and_iPad.png"></p>
+<p>这个问题倒是挺好解决，因为A*算法是有启发式搜索特性的，当遍历完所有可搜索的节点后，如果还没有找到完整可达的路径，则循环结束时得到的路径（部分路径）就是我们想要的。这个结果取决于启发式分数算法，即<a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">这篇文章</a>中讲到的H值计算方法。</p>
+<h3 id="动态障碍">动态障碍</h3><p>动态障碍也是游戏中经常会遇到的情况，比如迷宫关着的门，有钥匙可以打开；再比如怪物挡住去路，要杀掉才能通过等。动态障碍会动态地改变地图节点的可通过信息，需要实现的很高效。关键点在批量刷新，并且只刷新有变化的区域。具体细节，我在后续的文章中会有介绍。</p>
+<p>这些是最基本的寻路相关问题，针对不同场景，寻路算法也会有相应的优化，以下是我找到的一些资料，有兴趣可以看看：</p>
+<p><a href="http://www.zhihu.com/question/20298134" target="_blank" rel="external">http://www.zhihu.com/question/20298134</a>（知乎，你懂的）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103614613291/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103614613291/</a> （几何知识科普）<br><a href="http://blianchen.blog.163.com/blog/static/1310562992010324046930/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/1310562992010324046930/</a>（导航网格寻路）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103211052958/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103211052958/</a> （路点寻路）<br><a href="http://aigamedev.com/open/tutorials/potential-fields/" target="_blank" rel="external">http://aigamedev.com/open/tutorials/potential-fields/</a> （势能寻路）</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-19T12:10:32.000Z"><a href="/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/">2014-12-19</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/">Unity3d 编译log分析</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Unity编译过程中一些重要的信息输出在Editor.log中，mac下默认位置是~/Library/Logs/Unity/Editor.log</p>
+<p>或者通过Console面板右上角下拉菜单-》Open Editor Log打开</p>
+<p>里面有一些信息对分析包大小、查找无效脚本有帮助。</p>
+<p>例如： Script attached to ‘ShopContainer’ in scene ‘’ is missing or no valid script is attached. 一般是对象上挂载的脚本被删或无效导致</p>
+<p>在优化包大小时，想检查dll引用，可以在log中找到如下信息</p>
+<p>Mono dependencies included in the build<br>Dependency assembly - Mono.Posix.dll<br>Dependency assembly - Mono.Security.dll<br>Dependency assembly - System.Configuration.dll<br>Dependency assembly - System.Core.dll<br>Dependency assembly - System.Security.dll<br>Dependency assembly - System.Xml.dll<br>Dependency assembly - System.dll<br>Dependency assembly - mscorlib.dll<br>Dependency assembly - UnityEngine.UI.dll<br>Dependency assembly - IFacebook.dll<br>Dependency assembly - P31RestKit.dll<br>Dependency assembly - UniExtensions.dll<br>Dependency assembly - bouncywp71.dll<br>Dependency assembly - JDKLog.dll<br>Dependency assembly - Assembly-CSharp.dll<br>Dependency assembly - Assembly-UnityScript-firstpass.dll</p>
+<p>Log中还列出了压缩前各素材用量占比，如：</p>
+<p>Textures 224.1 mb 93.8%<br>Meshes 0.0 kb 0.0%<br>Animations 173.2 kb 0.1%<br>Sounds 2.1 mb 0.9%<br>Shaders 74.9 kb 0.0%<br>Other Assets 2.8 mb 1.2%<br>Levels 540.5 kb 0.2%<br>Scripts 2.7 mb 1.1%<br>Included DLLs 6.3 mb 2.6%<br>File headers 199.3 kb 0.1%<br>Complete size 238.9 mb 100.0%</p>
+<p>并将Assets按大小降序列出：</p>
+<p>16.0 mb 6.7% Built-in Texture2D:SpriteAtlasTexture-2048x2048-fmt33<br>16.0 mb 6.7% Assets/Atlas/chapterUI.png<br>16.0 mb 6.7% Assets/Atlas/PlayUI.png<br>16.0 mb 6.7% Assets/Atlas/menu.png<br>8.0 mb 3.3% Assets/Atlas/PlayUIEffects.png<br>8.0 mb 3.3% Assets/Atlas/guideUI.png<br>8.0 mb 3.3% Assets/Atlas/endUI.png<br>8.0 mb 3.3% Assets/Atlas/PauseUI.png<br>8.0 mb 3.3% Assets/Atlas/Rank.png<br>5.7 mb 2.4% Assets/Images/UnitySprites/Backgrounds/MedicalCenter/MedicalCenter.png<br>4.8 mb 2.0% Assets/Images/UnitySprites/Backgrounds/EiffelTower/EiffelTower.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/StarsSky/Halo.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/Moon/Moon.png<br>4.0 mb 1.7% Assets/Atlas/PlayUISecond.png<br>4.0 mb 1.7% Assets/Atlas/GiftPackage.png<br>4.0 mb 1.7% Assets/Atlas/GameCenter.png<br>4.0 mb 1.7% Assets/Atlas/GameBMFonts.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/Freedom/Sun.png<br>3.3 mb 1.4% Assets/Images/UnitySprites/Backgrounds/Taibei101/101Building.png<br>2.9 mb 1.2% Assets/Images/UnitySprites/Backgrounds/Pyramid/Pyramid1.png<br>2.8 mb 1.2% Assets/Images/UnitySprites/Backgrounds/Corcovado/Mountain.png<br>…..</p>
+<p>但在log中查找这些信息有些麻烦，于是想到开发一个插件来自动从Editor.log中分析并呈现结果</p>
+<p>这个工具目前含有三个模块：<br>1.Assets Size Analyze 这个模块列出上面提到的资源大小相关信息，并且扫描StreamingAssets和Resources目录中的资源，方便查看是否可供优化 如果你使用了NGUI框架，并且sprite图集存放在Assets/Atlas目录，则会分析图集中的图片被当成assets再次打包的情况</p>
+<p>2.Invalid Script Attach Analyze 列出无效的脚本引用，即抽出类似下面这种信息 Script attached to ‘ShopContainer’ in scene ‘’ is missing or no valid script is attached.</p>
+<p>3.Dll Reference Analyze 列出app引用的Dll</p>
+<p>模块是可以扩展的，通过实现ILogAnalyzeModule来实现自定义模块，用LogAnalyzer.RegisterModule进行注册</p>
+<h3 id="One_more_thing">One more thing</h3><p>这个工具开源了，github地址：<br><a href="https://github.com/xclouder/editor_log_analyze.git" target="_blank" rel="external">https://github.com/xclouder/editor_log_analyze.git</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+  
+    <a href="/page/2/" class="alignright next">下一頁</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

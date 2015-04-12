@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 2 頁 | xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-15T11:03:35.000Z"><a href="/2014/12/15/unity-e5-87-8f-e5-b0-91-e5-8c-85-e5-a4-a7-e5-b0-8f/">2014-12-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/12/15/unity-e5-87-8f-e5-b0-91-e5-8c-85-e5-a4-a7-e5-b0-8f/">Unity减少包大小</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>1.如果使用了NGUI，可以使用pngyu等工具将Atlas的图片进行压缩，这样最终包会有一定程度减小，但图片质量会受损。小图片这样处理并不明显。<strong>Unity re-codes imported assets into its own internal formats, so the choice of source asset type is not relevant.</strong>虽然官方文档这样说明，但考虑到压缩后的图片对Unity来说是新的图片，重新编码时也会有一些差异，对图集这种大图片来说，经验证明是可以减少存一定储空间的。</p>
+<p>2.StreammingAssets中的资源是原封不动copy到指定平台的，里面的资源尽量压缩。</p>
+<p>3.Resource目录下得素材是可以动态加载的，Unity不能判断是否会用到，所以全部会打包。</p>
+<p>4.splash图片使用jpg格式比png格式要节省不少空间</p>
+<p>5.如果是竖版的游戏，横版的splash可以删除，横版亦然。<br>示意图：</p>
+<p><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/11.jpg" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/11-200x300.jpg" alt="" title="1"></a></p>
+<p>6.打包时使用.NET2.0 Subset库，尽量不要使用System.dll，System.xml.dll。<br><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/21-300x64.png" alt="" title="2"></p>
+<p>7.使用Stripping Level优化<br><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/3.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/3-300x102.png" alt="" title="3"></a></p>
+<p>附实测数据表（环境：Unity4.6.1, XCode6.1）：</p>
+<p><table cellspacing="0" cellpadding="0" data-en-overlay-id="1"></table></p>
+<p><tbody></tbody></p>
+<p><tr></tr></p>
+<p><td valign="top" data-en-overlay-id="2"> </td></p>
+<p><td valign="top" data-en-overlay-id="3"></td></p>
+<div><span style="color: #000000; font-family: Helvetica;"><strong>iOS</strong></span></div><br><br><td valign="top"><br><div><span style="color: #000000; font-family: Helvetica;"><strong>Android(DeviceFilter:armv7 + x86)</strong></span></div><br></td><br><br><tr><br><td valign="top"><span style="color: #000000; font-family: 'Heiti SC Light';"><strong>空包</strong></span><span style="color: #000000; font-family: Helvetica;"><strong>.NET2.0</strong></span></td><br><td valign="top"><br><div><br><div>16,313,025 字节（磁盘上的 16.3 MB）</div><br></div><br></td><br><td valign="top"><br><div><br><div>15,722,577 字节（磁盘上的 15.7 MB）</div><br></div><br></td><br></tr><br><tr><br><td valign="top"><span style="color: #000000; font-family: 'Heiti SC Light';"><strong>空包</strong></span><span style="color: #000000; font-family: Helvetica;"><strong>.NET2.0 subset</strong></span></td><br><td valign="top"><br><div><br><div>13,969,709 字节（磁盘上的 14 MB）</div><br></div><br></td><br><td valign="top"><br><div><br><div>14,851,973 字节（磁盘上的 14.9 MB）</div><br></div><br></td><br></tr><br><tr><br><td valign="top">包含System.dll 引用的脚本</td><br><td valign="top"><br><div><br><div>13,972,220 字节（磁盘上的 14 MB）</div><br></div><br></td><br><td valign="top"><br><div><br><div>14,853,293 字节（磁盘上的 14.9 MB）</div><br></div><br></td><br></tr><br><tr><br><td valign="top">包含System.dll<br>包含System.Xml.dll<br>引用的脚本(包3)<br></td><br><td>15,140,473 字节（磁盘上的 15.1 MB）</td><br><td>15,269,881 字节（磁盘上的 15.3 MB）</td><br></tr><br><br><br>
+
+<p>包3，做了Stripping处理后大小<br>10,061,202 字节（磁盘上的 10.1 MB）<br>13,890,647 字节（磁盘上的 13.9 MB）</p>
+<p>8.音频在可容忍的情况下，适当提高压缩比。<br>9.对游戏素材进行压缩</p>
+<p><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/4.jpg" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/4-300x172.jpg" alt="" title="4"></a><br>针对一些素材，可以调整MaxSize进一步压缩分辨率，具体方法见参考【1】。<br>由于压缩格式不一样，同样Tag的Sprite会在SpritePack时放到两个图集中，从而可能增加Drawcall，这一点需要注意。</p>
+<p>10.对于android平台，如果包实在太大，可以使用 Split Application Binary 功能。<br>在Player Setting &gt; Publishing Settings里，</p>
+<p><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/5.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/5-300x293.png" alt="" title="5"></a></p>
+<p>这篇博文有详细描述：<br>unity减小android安装包大小 <a href="http://www.u3dblog.com/?cat=1" target="_blank" rel="external">http://www.u3dblog.com/?cat=1</a></p>
+<h3 id="参考：">参考：</h3><p>【1】<a href="http://docs.unity3d.com/Manual/ReducingFilesize.html" target="_blank" rel="external">http://docs.unity3d.com/Manual/ReducingFilesize.html</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-08T13:41:42.000Z"><a href="/2014/12/08/unity-e7-b2-92-e5-ad-90-e6-94-b6-e9-9b-86-e6-95-88-e6-9e-9c/">2014-12-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/12/08/unity-e7-b2-92-e5-ad-90-e6-94-b6-e9-9b-86-e6-95-88-e6-9e-9c/">unity粒子收集效果</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本文描述的是如何制作一个在某点爆炸的粒子经过一定延迟后汇聚到UI层上一点（比如能量槽）的效果，UI框架使用的NGUI。这类效果的使用往往能使游戏更生动。</p>
+<p>实现这个效果主要有三个问题需要解决：</p>
+<p>1.怎样让粒子汇聚到指定位置</p>
+<p>2.NGUI上控件的坐标怎么转换到粒子的坐标</p>
+<p>3.UI和粒子的显示层级怎么控制</p>
+<div> </div><br><div><strong>问题1：怎样让粒子汇聚到指定位置？</strong></div><br><div>ParticleSystem.Particle类的GetParticles方法能获取当前所有的粒子对象，Particle实例有个position属性，能通过脚本控制粒子位置。我们只需在粒子产生一段时间后，用脚本来控制粒子的位置并使其汇聚到一点即可。</div>
+
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> <span class="built_in">count</span> = particleSystem.GetParticles(particles);</span><br><span class="line"></span><br><span class="line">for (<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;<span class="built_in">count</span>; i++) &#123;</span><br><span class="line">	Vector3 pos = Vector3.Lerp(particles[i].<span class="keyword">position</span>, fixedTo, moveTime / collectDuration);</span><br><span class="line">	particles[i].<span class="keyword">position</span> = pos;</span><br><span class="line">&#125;</span><br><span class="line">particleSystem.SetParticles(particles, <span class="built_in">count</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>NOTE:Particle.position默认是基于ParticlSystem对象的坐标系(Local)，也可以是世界坐标系，这里我们使用世界坐标系，修改“Simulation Space”为World。</strong><br><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/1.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/1-300x238.png" alt="" title="1"></a></p>
+<p><strong>问题2：NGUI坐标到世界位置的转换</strong><br>能量槽往往是位于UI层的，而我们的游戏物体一般在主相机中渲染。粒子效果一般在游戏物体上产生，比如Player，所以我们一般知道粒子在主摄像机中的世界坐标(记为fromPosition)，我们需要把NGUI中组件的坐标转换到主相机的世界坐标（记为toPosition），再实现粒子从fromPosition爆炸并收集到toPosition。如下：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//get to position</span></span><br><span class="line"><span class="constant">Vector3 nguiPosition</span> = powerBar.transform.position;</span><br><span class="line"><span class="constant">Camera uiCamera</span> = NGUITools.FindCameraForLayer(LayerMask.NameToLayer(<span class="string">"UI"</span>));</span><br><span class="line"><span class="constant">Vector3 viewportPos</span> = uiCamera.WorldToViewportPoint(nguiPosition);</span><br><span class="line"><span class="constant">Vector3 toPosition</span> = Camera.main.ViewportToWorldPoint(viewportPos);</span><br></pre></td></tr></table></figure></p>
+<p><strong>问题3：UI和粒子的显示层级怎么控制</strong><br>解决上面两个问题，我们已经能正确产生粒子，并把它收集到能量槽的位置。但此时粒子汇聚时会被能量槽挡住，这个看上去很奇怪。我们需要把粒子显示在UI层上面。</p>
+<p>新建一个相机“Particle Camera”，设置如下<br><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/2.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/2-211x300.png" alt="" title="2"></a></p>
+<p>新建名为“ParticleLayer”的层，让新相机专门负责渲染这一层。Depth在主相机和NGUI相机之上，这里设置为1，这样粒子就能显示到最上面了。</p>
+<p>附上示例工程：<br><a href="https://github.com/xclouder/particlecollect" target="_blank" rel="external">https://github.com/xclouder/particlecollect</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-01-20T16:05:53.000Z"><a href="/2013/01/21/-e5-88-86-e4-ba-ab-e4-b8-80-e4-b8-aaruby-e7-89-88-e7-9a-84apn-e6-8e-a8-e9-80-81-e5-b7-a5-e5-85-b7/">2013-01-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/01/21/-e5-88-86-e4-ba-ab-e4-b8-80-e4-b8-aaruby-e7-89-88-e7-9a-84apn-e6-8e-a8-e9-80-81-e5-b7-a5-e5-85-b7/">分享一个ruby版的APN推送工具</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>首先制作好推送用的证书(.pem)，这里略过，下面是推送脚本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'openssl'</span></span><br><span class="line"></span><br><span class="line">certfile = <span class="string">'babyphotos.pem'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># build the context</span></span><br><span class="line">context = OpenSSL::SSL::SSLContext.<span class="keyword">new</span></span><br><span class="line">context.cert = OpenSSL::X509::Certificate.<span class="keyword">new</span>(File.open(certfile));</span><br><span class="line">context.key = OpenSSL::PKey::RSA.<span class="keyword">new</span>(File.open(certfile));</span><br><span class="line"></span><br><span class="line"><span class="comment"># build the connect</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'socket'</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$apn_port</span> = <span class="number">2195</span></span><br><span class="line"><span class="variable">$apn_product_url</span> = <span class="string">'gateway.sandbox.push.apple.com'</span><span class="comment">#'gateway.push.apple.com'</span></span><br><span class="line"></span><br><span class="line">tcp_client = TCPSocket.<span class="keyword">new</span> <span class="variable">$apn_product_url</span>, <span class="variable">$apn_port</span></span><br><span class="line">ssl_client = OpenSSL::SSL::SSLSocket.<span class="keyword">new</span> tcp_client, context</span><br><span class="line"></span><br><span class="line"><span class="comment"># prepare data</span></span><br><span class="line">cmd = <span class="number">0</span></span><br><span class="line">token = [<span class="string">'&lt;56467fa4 258ae34e e5b70089 f9b22d6d 4a2898a7 c8221c6f d143eabc 83619e2a&gt;'</span>.gsub(/[\s|&lt;|&gt;]/,<span class="string">''</span>)].pack(<span class="string">'H*'</span>)</span><br><span class="line">payload = <span class="string">'&#123;"aps":&#123;"alert":"Congratulations~","sound":"default"&#125;&#125;'</span></span><br><span class="line"></span><br><span class="line">data = [cmd, token.bytesize, token, payload.bytesize, payload].pack(<span class="string">"cna*na*"</span>)</span><br><span class="line"><span class="comment"># connect and write data</span></span><br><span class="line">ssl_client.connect</span><br><span class="line">ssl_client.puts data</span><br><span class="line"></span><br><span class="line">ssl_client.close</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/" class="alignleft prev">上一頁</a>
+  
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

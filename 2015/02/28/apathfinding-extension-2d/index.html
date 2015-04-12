@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>AstarPathFinding Project的2D扩展 | xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="AstarPathFinding Project的2D扩展"/>
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-02-28T07:06:43.000Z"><a href="/2015/02/28/apathfinding-extension-2d/">2015-02-28</a></time>
+      
+      
+  
+    <h1 class="title">AstarPathFinding Project的2D扩展</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>AstartPathFinding是Unity里一个非常高效的A*寻路插件，支持GridGraph、Navmeshes、PointGraph、动态障碍、可扩展等特性(特性列表：<a href="http://arongranberg.com/astar/features" target="_blank" rel="external">http://arongranberg.com/astar/features</a>)。</p>
+<p>可惜的是目前不支持2D，不过没关系，既然支持扩展，咱们可以自己实现一个2D扩展，顺便阅读源码学习学习(不得不赞一下作者，注释写的很全)。</p>
+<p>开始扩展之前，我们先通过阅读代码了解下这个插件的结构。<br>整个系统API由AstarPath类提供，寻路接口如下<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StartPath</span> <span class="params">(Path p, <span class="keyword">bool</span> pushToFront = <span class="keyword">false</span>)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这个接口是异步的，调用这个方法开始寻路后，路径的计算会经过5个状态：创建、等待计算、正在计算、返回等待、已返回。从Path类的PathStatus枚举属性可以看出来：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">enum</span> <span class="title">PathState</span> </span>&#123;</span><br><span class="line"><span class="constant">    Created</span> = <span class="number">0</span>,</span><br><span class="line"><span class="constant">    PathQueue</span> = <span class="number">1</span>,</span><br><span class="line"><span class="constant">    Processing</span> = <span class="number">2</span>,</span><br><span class="line"><span class="constant">    ReturnQueue</span> = <span class="number">3</span>,</span><br><span class="line"><span class="constant">    Returned</span> = <span class="number">4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回的路径会通过回调函数通知上层逻辑。</p>
+<p>A*寻路核心逻辑在AstarPath类的两个CalculatePaths方法中：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> IEnumerator CalculatePaths (System.<span class="keyword">Object</span> _threadInfo)</span><br><span class="line"><span class="keyword">void</span> CalculatePathsThreaded (System.<span class="keyword">Object</span> _threadInfo)</span><br></pre></td></tr></table></figure></p>
+<p>第一个是协同的版本，使用StartCorotine来调用，不使用额外的线程；第二个是多线程的版本，可以根据项目需要进行调优。</p>
+<p>Path是一个抽象类，用来将不同寻路算法进行封装，具体子类有：ABPath、ConstantPath、FleePath、FloodPath、FloodPathTracer、MultiTargetPath、RandomPath。</p>
+<p>Path计算过程中，会读取地图信息——NavGraph，最后得出的路径为GraphNode的列表。NavGraph是由扫描场景信息获取的。见AstarPath类中的Scan方法。</p>
+<p>寻路的算法，咱们直接延用ABPath就好，剩下还差一个2D的NavGraph。插件原有一个GridGraph，本是3D的，经测试旋转一下也能作为2D使用，但需要经过一些设置。而且相应的动态障碍组件DynamicGridObstacle还不支持2D。索性我们仿照GridGraph专门写一个GridGraph2D来支持2D。</p>
+<p>官方网站对扩展有个简单的文档，但似乎很久没更新了，新版的接口已经发生了改变。下面了记录我的实现过程：</p>
+<h3 id="1-实现GridGraph2D">1.实现GridGraph2D</h3><p>考虑到原有的GridGraph扩展起来并不方便，我这里让GridGraph2D直接继承自NavGraph，并实现IUpdatableGraph和IRaycastableGraph接口。</p>
+<p>几个关键的方法需要重写<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> ScanInternal (OnScanStatus statusCallback)</span><br><span class="line"><span class="comment">//这个方法扫描场景，将地图网格化，并记录每个格子是否可走(walkable)。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> GetNodes (GraphNodeDelegateCancelable del)</span><br><span class="line"><span class="comment">//获取地图的所有网格节点</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> UpdateArea (GraphUpdateObject o)</span><br><span class="line"><span class="comment">//对地图节点可行走状态进行局部刷新，实现这个才能支持动态障碍。</span></span><br></pre></td></tr></table></figure></p>
+<p>可以参照原来GridGraph的实现，主要将3d中xz坐标，换到xy坐标</p>
+<p>具体代码请参看附件。</p>
+<h3 id="2-实现GraphNode2D">2.实现GraphNode2D</h3><p>同上，直接继承GraphNode，并参考GridNode实现。</p>
+<h3 id="3-实现GridGraph2DEditor">3.实现GridGraph2DEditor</h3><p>在AstarPath组件的Inspector中，有各种Graph的可视化参数编辑，我们可以通过实现一个GraphEditor来为上面写的GridGraph2D添加一个可视化编辑器。<br><img src="img/1.png" alt=""></p>
+<p>在类的上面，添加如上图所示的Attribute，即可在AstarPath的Inspector中看到新建“Grid Graph 2D”的按钮：<br><img src="img/2.png" alt=""></p>
+<p>效果如下：<br><img src="img/3.png" alt=""></p>
+<h3 id="4-实现DynamicGridObstacle2D">4.实现DynamicGridObstacle2D</h3><p>在原来DynamicGridObstacle基础上，改变坐标、并去掉高度检测。</p>
+<h3 id="5-实现FunnelModifier2D">5.实现FunnelModifier2D</h3><p>FunnelModifier是烟囱路径平滑算法，AstarPathFinding中，路径平滑是作为一个处理链存在的，即获得A*算法的初步路径后，可以经过多个路径平滑算法处理，最终得到更理想的路径。原来的FunnelModifier也不支持2D，需要修改坐标xz-&gt;xy。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Unity3D/">Unity3D</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://www.xclouder.com/2015/02/28/apathfinding-extension-2d/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>寻路算法介绍 | xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="寻路算法介绍"/>
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-01-13T11:39:34.000Z"><a href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">2015-01-13</a></time>
+      
+      
+  
+    <h1 class="title">寻路算法介绍</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近开展的新项目决定加入自动寻路的特性，以前一直觉得寻路是一个很神秘的东西，这次终于有机会揭开神秘的面纱，高兴。</p>
+<p>网络上搜索寻路算法，首先映入眼帘的便是满屏的A*算法，可见这方面的资料已经非常多了。以下我就从项目实际需求出发，综合整理下这方面的资料，给大家节省点搜索的时间。</p>
+<h3 id="算法原理">算法原理</h3><p>关于A*算法的介绍，Patrick Lester有篇很好的文章，深入浅出：<br><a href="http://www.policyalmanac.org/games/aStarTutorial.htm" target="_blank" rel="external">http://www.policyalmanac.org/games/aStarTutorial.htm</a> </p>
+<p>另外国人也有不错的翻译：<br><a href="http://blog.csdn.net/crayondeng/article/details/12342989" target="_blank" rel="external">http://blog.csdn.net/crayondeng/article/details/12342989</a><br><a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html</a></p>
+<p>这是简单的A<em>算法，为了验证下效果，我们将游戏世界划分为网格，在这些网格上使用上面的A</em>算法，其结果如下图：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/astar_simple.png" alt="astar_simple.png" title="astar_simple.png"></p>
+<p>图中绿色线为路径，这走位很风骚，但显然不是我们想要的结果：两点之间线段最短嘛。</p>
+<p>为了得到一个看起来合理的路径，要对上一步的到得结果进行处理，这个过程叫做路径平滑。</p>
+<h3 id="路径平滑">路径平滑</h3><p>关于路径平滑算法也有不少文章进行了描述，不过google“路径平滑算法”结果较少，而“path smoothing algorithm”则能得到不少有价值的结果。</p>
+<p>不少unity寻路插件都使用到了烟囱平滑算法，这篇文章图文并茂的介绍了算法的过程：</p>
+<p><a href="http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html" target="_blank" rel="external">http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html</a></p>
+<p>使用路径平滑后的寻路结果如下：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/funnel_modify.png" alt="NewImage" title="funnel_modify.png"></p>
+<p>如果要实现更加真实的路径平滑，还有很多因素需要考虑，比如当前速度、加速度、方向、最大转弯角度等等，这篇文章介绍了怎样获得更真实的路径结果：</p>
+<p><a href="http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php" target="_blank" rel="external">http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php</a></p>
+<h3 id="部分寻路">部分寻路</h3><p>在游戏中，用户指定的目的地有可能是一个不可达的区域，这时传统A*算法是找不到路径的。可是用户操作了什么都不做会很奇怪，比较好的做法是寻路到离用户指定地点最近的可达点，如下图：</p>
+<p><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2015/01/Door2_unity_-_hero_-_iPhone__iPod_Touch_and_iPad.png" alt="Door2 unity hero iPhone iPod Touch and iPad" title="Door2_unity_-_hero_-_iPhone__iPod_Touch_and_iPad.png"></p>
+<p>这个问题倒是挺好解决，因为A*算法是有启发式搜索特性的，当遍历完所有可搜索的节点后，如果还没有找到完整可达的路径，则循环结束时得到的路径（部分路径）就是我们想要的。这个结果取决于启发式分数算法，即<a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">这篇文章</a>中讲到的H值计算方法。</p>
+<h3 id="动态障碍">动态障碍</h3><p>动态障碍也是游戏中经常会遇到的情况，比如迷宫关着的门，有钥匙可以打开；再比如怪物挡住去路，要杀掉才能通过等。动态障碍会动态地改变地图节点的可通过信息，需要实现的很高效。关键点在批量刷新，并且只刷新有变化的区域。具体细节，我在后续的文章中会有介绍。</p>
+<p>这些是最基本的寻路相关问题，针对不同场景，寻路算法也会有相应的优化，以下是我找到的一些资料，有兴趣可以看看：</p>
+<p><a href="http://www.zhihu.com/question/20298134" target="_blank" rel="external">http://www.zhihu.com/question/20298134</a>（知乎，你懂的）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103614613291/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103614613291/</a> （几何知识科普）<br><a href="http://blianchen.blog.163.com/blog/static/1310562992010324046930/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/1310562992010324046930/</a>（导航网格寻路）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103211052958/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103211052958/</a> （路点寻路）<br><a href="http://aigamedev.com/open/tutorials/potential-fields/" target="_blank" rel="external">http://aigamedev.com/open/tutorials/potential-fields/</a> （势能寻路）</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Unity3D/">Unity3D</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://www.xclouder.com/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

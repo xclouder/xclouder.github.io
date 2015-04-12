@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Unity3d 编译log分析 | xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Unity3d 编译log分析"/>
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-19T12:10:32.000Z"><a href="/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/">2014-12-19</a></time>
+      
+      
+  
+    <h1 class="title">Unity3d 编译log分析</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Unity编译过程中一些重要的信息输出在Editor.log中，mac下默认位置是~/Library/Logs/Unity/Editor.log</p>
+<p>或者通过Console面板右上角下拉菜单-》Open Editor Log打开</p>
+<p>里面有一些信息对分析包大小、查找无效脚本有帮助。</p>
+<p>例如： Script attached to ‘ShopContainer’ in scene ‘’ is missing or no valid script is attached. 一般是对象上挂载的脚本被删或无效导致</p>
+<p>在优化包大小时，想检查dll引用，可以在log中找到如下信息</p>
+<p>Mono dependencies included in the build<br>Dependency assembly - Mono.Posix.dll<br>Dependency assembly - Mono.Security.dll<br>Dependency assembly - System.Configuration.dll<br>Dependency assembly - System.Core.dll<br>Dependency assembly - System.Security.dll<br>Dependency assembly - System.Xml.dll<br>Dependency assembly - System.dll<br>Dependency assembly - mscorlib.dll<br>Dependency assembly - UnityEngine.UI.dll<br>Dependency assembly - IFacebook.dll<br>Dependency assembly - P31RestKit.dll<br>Dependency assembly - UniExtensions.dll<br>Dependency assembly - bouncywp71.dll<br>Dependency assembly - JDKLog.dll<br>Dependency assembly - Assembly-CSharp.dll<br>Dependency assembly - Assembly-UnityScript-firstpass.dll</p>
+<p>Log中还列出了压缩前各素材用量占比，如：</p>
+<p>Textures 224.1 mb 93.8%<br>Meshes 0.0 kb 0.0%<br>Animations 173.2 kb 0.1%<br>Sounds 2.1 mb 0.9%<br>Shaders 74.9 kb 0.0%<br>Other Assets 2.8 mb 1.2%<br>Levels 540.5 kb 0.2%<br>Scripts 2.7 mb 1.1%<br>Included DLLs 6.3 mb 2.6%<br>File headers 199.3 kb 0.1%<br>Complete size 238.9 mb 100.0%</p>
+<p>并将Assets按大小降序列出：</p>
+<p>16.0 mb 6.7% Built-in Texture2D:SpriteAtlasTexture-2048x2048-fmt33<br>16.0 mb 6.7% Assets/Atlas/chapterUI.png<br>16.0 mb 6.7% Assets/Atlas/PlayUI.png<br>16.0 mb 6.7% Assets/Atlas/menu.png<br>8.0 mb 3.3% Assets/Atlas/PlayUIEffects.png<br>8.0 mb 3.3% Assets/Atlas/guideUI.png<br>8.0 mb 3.3% Assets/Atlas/endUI.png<br>8.0 mb 3.3% Assets/Atlas/PauseUI.png<br>8.0 mb 3.3% Assets/Atlas/Rank.png<br>5.7 mb 2.4% Assets/Images/UnitySprites/Backgrounds/MedicalCenter/MedicalCenter.png<br>4.8 mb 2.0% Assets/Images/UnitySprites/Backgrounds/EiffelTower/EiffelTower.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/StarsSky/Halo.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/Moon/Moon.png<br>4.0 mb 1.7% Assets/Atlas/PlayUISecond.png<br>4.0 mb 1.7% Assets/Atlas/GiftPackage.png<br>4.0 mb 1.7% Assets/Atlas/GameCenter.png<br>4.0 mb 1.7% Assets/Atlas/GameBMFonts.png<br>4.0 mb 1.7% Assets/Images/UnitySprites/Backgrounds/Freedom/Sun.png<br>3.3 mb 1.4% Assets/Images/UnitySprites/Backgrounds/Taibei101/101Building.png<br>2.9 mb 1.2% Assets/Images/UnitySprites/Backgrounds/Pyramid/Pyramid1.png<br>2.8 mb 1.2% Assets/Images/UnitySprites/Backgrounds/Corcovado/Mountain.png<br>…..</p>
+<p>但在log中查找这些信息有些麻烦，于是想到开发一个插件来自动从Editor.log中分析并呈现结果</p>
+<p>这个工具目前含有三个模块：<br>1.Assets Size Analyze 这个模块列出上面提到的资源大小相关信息，并且扫描StreamingAssets和Resources目录中的资源，方便查看是否可供优化 如果你使用了NGUI框架，并且sprite图集存放在Assets/Atlas目录，则会分析图集中的图片被当成assets再次打包的情况</p>
+<p>2.Invalid Script Attach Analyze 列出无效的脚本引用，即抽出类似下面这种信息 Script attached to ‘ShopContainer’ in scene ‘’ is missing or no valid script is attached.</p>
+<p>3.Dll Reference Analyze 列出app引用的Dll</p>
+<p>模块是可以扩展的，通过实现ILogAnalyzeModule来实现自定义模块，用LogAnalyzer.RegisterModule进行注册</p>
+<h3 id="One_more_thing">One more thing</h3><p>这个工具开源了，github地址：<br><a href="https://github.com/xclouder/editor_log_analyze.git" target="_blank" rel="external">https://github.com/xclouder/editor_log_analyze.git</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Unity3D/">Unity3D</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://www.xclouder.com/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

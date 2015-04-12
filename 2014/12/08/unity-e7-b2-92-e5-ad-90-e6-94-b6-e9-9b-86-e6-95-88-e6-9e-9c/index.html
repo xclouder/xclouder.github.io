@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>unity粒子收集效果 | xClouder</title>
+  <meta name="author" content="xClouder">
+  
+  <meta name="description" content="xClouder&#39;s Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="unity粒子收集效果"/>
+  <meta property="og:site_name" content="xClouder"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">xClouder</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-08T13:41:42.000Z"><a href="/2014/12/08/unity-e7-b2-92-e5-ad-90-e6-94-b6-e9-9b-86-e6-95-88-e6-9e-9c/">2014-12-08</a></time>
+      
+      
+  
+    <h1 class="title">unity粒子收集效果</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本文描述的是如何制作一个在某点爆炸的粒子经过一定延迟后汇聚到UI层上一点（比如能量槽）的效果，UI框架使用的NGUI。这类效果的使用往往能使游戏更生动。</p>
+<p>实现这个效果主要有三个问题需要解决：</p>
+<p>1.怎样让粒子汇聚到指定位置</p>
+<p>2.NGUI上控件的坐标怎么转换到粒子的坐标</p>
+<p>3.UI和粒子的显示层级怎么控制</p>
+<div> </div><br><div><strong>问题1：怎样让粒子汇聚到指定位置？</strong></div><br><div>ParticleSystem.Particle类的GetParticles方法能获取当前所有的粒子对象，Particle实例有个position属性，能通过脚本控制粒子位置。我们只需在粒子产生一段时间后，用脚本来控制粒子的位置并使其汇聚到一点即可。</div>
+
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> <span class="built_in">count</span> = particleSystem.GetParticles(particles);</span><br><span class="line"></span><br><span class="line">for (<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;<span class="built_in">count</span>; i++) &#123;</span><br><span class="line">	Vector3 pos = Vector3.Lerp(particles[i].<span class="keyword">position</span>, fixedTo, moveTime / collectDuration);</span><br><span class="line">	particles[i].<span class="keyword">position</span> = pos;</span><br><span class="line">&#125;</span><br><span class="line">particleSystem.SetParticles(particles, <span class="built_in">count</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>NOTE:Particle.position默认是基于ParticlSystem对象的坐标系(Local)，也可以是世界坐标系，这里我们使用世界坐标系，修改“Simulation Space”为World。</strong><br><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/1.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/1-300x238.png" alt="" title="1"></a></p>
+<p><strong>问题2：NGUI坐标到世界位置的转换</strong><br>能量槽往往是位于UI层的，而我们的游戏物体一般在主相机中渲染。粒子效果一般在游戏物体上产生，比如Player，所以我们一般知道粒子在主摄像机中的世界坐标(记为fromPosition)，我们需要把NGUI中组件的坐标转换到主相机的世界坐标（记为toPosition），再实现粒子从fromPosition爆炸并收集到toPosition。如下：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//get to position</span></span><br><span class="line"><span class="constant">Vector3 nguiPosition</span> = powerBar.transform.position;</span><br><span class="line"><span class="constant">Camera uiCamera</span> = NGUITools.FindCameraForLayer(LayerMask.NameToLayer(<span class="string">"UI"</span>));</span><br><span class="line"><span class="constant">Vector3 viewportPos</span> = uiCamera.WorldToViewportPoint(nguiPosition);</span><br><span class="line"><span class="constant">Vector3 toPosition</span> = Camera.main.ViewportToWorldPoint(viewportPos);</span><br></pre></td></tr></table></figure></p>
+<p><strong>问题3：UI和粒子的显示层级怎么控制</strong><br>解决上面两个问题，我们已经能正确产生粒子，并把它收集到能量槽的位置。但此时粒子汇聚时会被能量槽挡住，这个看上去很奇怪。我们需要把粒子显示在UI层上面。</p>
+<p>新建一个相机“Particle Camera”，设置如下<br><a href="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/2.png" target="_blank" rel="external"><img src="http://xclouder-wordpress.stor.sinaapp.com/uploads/2014/12/2-211x300.png" alt="" title="2"></a></p>
+<p>新建名为“ParticleLayer”的层，让新相机专门负责渲染这一层。Depth在主相机和NGUI相机之上，这里设置为1，这样粒子就能显示到最上面了。</p>
+<p>附上示例工程：<br><a href="https://github.com/xclouder/particlecollect" target="_blank" rel="external">https://github.com/xclouder/particlecollect</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Unity3D/">Unity3D</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://www.xclouder.com/2014/12/08/unity-e7-b2-92-e5-ad-90-e6-94-b6-e9-9b-86-e6-95-88-e6-9e-9c/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:www.xclouder.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/ML/">ML</a><small>0</small></li>
+  
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>10</small></li>
+  
+    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
+  
+    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
+  
+    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
+  
+    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
+  
+    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
+  
+    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
+  
+    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
+  
+    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
+  
+    <li><a href="/tags/重构/">重构</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 xClouder
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'xclouder';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
