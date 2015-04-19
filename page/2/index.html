@@ -51,6 +51,99 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-01-30T09:58:07.000Z"><a href="/2015/01/30/ngui-sprite-e6-8b-89-e4-bc-b8-e8-be-b9-e7-bc-98-e8-99-9a-e5-8c-96-e9-97-ae-e9-a2-98/">2015-01-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/01/30/ngui-sprite-e6-8b-89-e4-bc-b8-e8-be-b9-e7-bc-98-e8-99-9a-e5-8c-96-e9-97-ae-e9-a2-98/">NGUI Sprite拉伸边缘虚化问题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>项目里有个需求，需要在某个UI元素下面放置一个纯色的下划线，我使用的2x2的白色方块，然后进行拉伸实现。<br>但是问题来了，当我把这个方块加入图集中后，创建的UISprite看上去是这个样子：<br><img src="/images/520e20bf15de9c63690fc58e5d675f24e5e79730.png" alt=""></p>
+<p>说好的纯色呢？</p>
+<p>Google一番未果，于是跑到NGUI官方论坛上问了一下，第二天就有了回复。原来我的UISprite是在图集中，而生成图集的时候，默认使用的Filter Mode 是Trilinear，这种线性插值导致渲染时会和周围的像素“渗透”。如果把图集的Filter Mode设置成Point，就没有这个问题了。</p>
+<p><img src="/images/644040de72e2e11ca33f18fa82663628147d5b74.jpg" alt=""></p>
+<p><img src="/images/663c4fcf52b8925b2dd2108db9cba0079d7c400e.png" alt="319285CF 64CD 4211 BFC3 DFDBF3A9D522"></p>
+<p>但是设置成Point会强制要求同一个图集里的UISprite都使用这个模式，可能会影响效果。<br>一个折衷的方案是，把这类素材放在单独的图集里，但这样会增加DrawCall。<br>更好的方法是Sprite仍在原来图集中，使用Sprite的Sliced模式，<br><img src="/images/44021803f3589cdc1cf8cef011b15e431e8f0e04.png" alt=""><br>并给Sprite设置一个1px的边框<br><img src="/images/836c626831d594bfd02700c72fb401c6368fe6f6.png" alt=""><br>这样图片能正常显示和拉伸了。这种方案性能会更好。</p>
+<h3 id="【Tips】">【Tips】</h3><p>关于FilterMode，它的意义是：<br>当该纹理由于3D变换进行拉伸时，它将如何被过滤插值。共有三种选择：<br>| FilterMode | 意义 |<br>|:—————:| —— |<br>| Point | 单点插值，纹理将变得块状化（blocky up close）|<br>| Bilinear | 双线性插值，纹理将变得模糊（blurry up close）|<br>| Trilinear | 三线性插值，类似Bilinear，但是纹理还会在不同的mip水平之间（between the different mip levels）进行模糊 |</p>
+<h3 id="【参考】">【参考】</h3><p><a href="http://www.tasharen.com/forum/index.php?topic=12439.msg56762#msg56762" target="_blank" rel="external">http://www.tasharen.com/forum/index.php?topic=12439.msg56762#msg56762</a><br><a href="http://docs.unity3d.com/ScriptReference/FilterMode.html" target="_blank" rel="external">http://docs.unity3d.com/ScriptReference/FilterMode.html</a><br><a href="http://en.wikipedia.org/wiki/Texture_filtering" target="_blank" rel="external">http://en.wikipedia.org/wiki/Texture_filtering</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-01-13T11:39:34.000Z"><a href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">2015-01-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">寻路算法介绍</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近开展的新项目决定加入自动寻路的特性，以前一直觉得寻路是一个很神秘的东西，这次终于有机会揭开神秘的面纱，高兴。</p>
+<p>网络上搜索寻路算法，首先映入眼帘的便是满屏的A*算法，可见这方面的资料已经非常多了。以下我就从项目实际需求出发，综合整理下这方面的资料，给大家节省点搜索的时间。</p>
+<h3 id="算法原理">算法原理</h3><p>关于A*算法的介绍，Patrick Lester有篇很好的文章，深入浅出：<br><a href="http://www.policyalmanac.org/games/aStarTutorial.htm" target="_blank" rel="external">http://www.policyalmanac.org/games/aStarTutorial.htm</a> </p>
+<p>另外国人也有不错的翻译：<br><a href="http://blog.csdn.net/crayondeng/article/details/12342989" target="_blank" rel="external">http://blog.csdn.net/crayondeng/article/details/12342989</a><br><a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html</a></p>
+<p>这是简单的A<em>算法，为了验证下效果，我们将游戏世界划分为网格，在这些网格上使用上面的A</em>算法，其结果如下图：</p>
+<p><img src="/images/3c38746894bb44f3461ef2b3c4dad9d15cfb4561.png" alt="astar_simple.png" title="astar_simple.png"></p>
+<p>图中绿色线为路径，这走位很风骚，但显然不是我们想要的结果：两点之间线段最短嘛。</p>
+<p>为了得到一个看起来合理的路径，要对上一步的到得结果进行处理，这个过程叫做路径平滑。</p>
+<h3 id="路径平滑">路径平滑</h3><p>关于路径平滑算法也有不少文章进行了描述，不过google“路径平滑算法”结果较少，而“path smoothing algorithm”则能得到不少有价值的结果。</p>
+<p>不少unity寻路插件都使用到了烟囱平滑算法，这篇文章图文并茂的介绍了算法的过程：</p>
+<p><a href="http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html" target="_blank" rel="external">http://digestingduck.blogspot.hk/2010/03/simple-stupid-funnel-algorithm.html</a></p>
+<p>使用路径平滑后的寻路结果如下：</p>
+<p><img src="/images/663727efee2d75c9b19ea16dde8c920256dc223a.png" alt="NewImage" title="funnel_modify.png"></p>
+<p>如果要实现更加真实的路径平滑，还有很多因素需要考虑，比如当前速度、加速度、方向、最大转弯角度等等，这篇文章介绍了怎样获得更真实的路径结果：</p>
+<p><a href="http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php" target="_blank" rel="external">http://www.gamasutra.com/view/feature/3096/toward_more_realistic_pathfinding.php</a></p>
+<h3 id="部分寻路">部分寻路</h3><p>在游戏中，用户指定的目的地有可能是一个不可达的区域，这时传统A*算法是找不到路径的。可是用户操作了什么都不做会很奇怪，比较好的做法是寻路到离用户指定地点最近的可达点，如下图：</p>
+<p><img src="/images/8638d260fbdee96669a7236e4594261914d48fa6.png" alt="Door2 unity hero iPhone iPod Touch and iPad" title="Door2_unity_-_hero_-_iPhone__iPod_Touch_and_iPad.png"></p>
+<p>这个问题倒是挺好解决，因为A*算法是有启发式搜索特性的，当遍历完所有可搜索的节点后，如果还没有找到完整可达的路径，则循环结束时得到的路径（部分路径）就是我们想要的。这个结果取决于启发式分数算法，即<a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html" target="_blank" rel="external">这篇文章</a>中讲到的H值计算方法。</p>
+<h3 id="动态障碍">动态障碍</h3><p>动态障碍也是游戏中经常会遇到的情况，比如迷宫关着的门，有钥匙可以打开；再比如怪物挡住去路，要杀掉才能通过等。动态障碍会动态地改变地图节点的可通过信息，需要实现的很高效。关键点在批量刷新，并且只刷新有变化的区域。具体细节，我在后续的文章中会有介绍。</p>
+<p>这些是最基本的寻路相关问题，针对不同场景，寻路算法也会有相应的优化，以下是我找到的一些资料，有兴趣可以看看：</p>
+<p><a href="http://www.zhihu.com/question/20298134" target="_blank" rel="external">http://www.zhihu.com/question/20298134</a>（知乎，你懂的）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103614613291/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103614613291/</a> （几何知识科普）<br><a href="http://blianchen.blog.163.com/blog/static/1310562992010324046930/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/1310562992010324046930/</a>（导航网格寻路）<br><a href="http://blianchen.blog.163.com/blog/static/13105629920103211052958/" target="_blank" rel="external">http://blianchen.blog.163.com/blog/static/13105629920103211052958/</a> （路点寻路）<br><a href="http://aigamedev.com/open/tutorials/potential-fields/" target="_blank" rel="external">http://aigamedev.com/open/tutorials/potential-fields/</a> （势能寻路）</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2014-12-19T12:10:32.000Z"><a href="/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/">2014-12-19</a></time>
       
       
@@ -250,7 +343,7 @@
   
     <li><a href="/categories/ML/">ML</a><small>0</small></li>
   
-    <li><a href="/categories/Unity3D/">Unity3D</a><small>11</small></li>
+    <li><a href="/categories/Unity3D/">Unity3D</a><small>12</small></li>
   
     <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
   
@@ -278,6 +371,8 @@
     <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
   
     <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
+  
+    <li><a href="/tags/Sublime/">Sublime</a><small>1</small></li>
   
     <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
   
