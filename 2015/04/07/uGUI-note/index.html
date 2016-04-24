@@ -1,72 +1,263 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   
   <title>uGUI学习笔记 | xClouder</title>
-  <meta name="author" content="xClouder">
-  
-  <meta name="description" content="xClouder&#39;s Blog">
-  
-  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <meta property="og:title" content="uGUI学习笔记"/>
-  <meta property="og:site_name" content="xClouder"/>
-
+  <meta name="description" content="看Unity3D文档像看国内教课书一样，一些概念，不懂的时候看还是不懂，明白了以后再看，好像也没有说错。好几个做Unity3D的朋友跟我吐槽过U3D的文档质量，相比Apple贴心的技术文档相去甚远。
+话虽这么说，权威的资料当然还是官方的，建议先仔细读一遍，不懂的再往下读：http://docs.unity3d.com/Manual/UISystem.html
+网上的教程大多泛泛而谈，就不吐槽了。好">
+<meta property="og:type" content="article">
+<meta property="og:title" content="uGUI学习笔记">
+<meta property="og:url" content="http://www.xclouder.com/2015/04/07/uGUI-note/index.html">
+<meta property="og:site_name" content="xClouder">
+<meta property="og:description" content="看Unity3D文档像看国内教课书一样，一些概念，不懂的时候看还是不懂，明白了以后再看，好像也没有说错。好几个做Unity3D的朋友跟我吐槽过U3D的文档质量，相比Apple贴心的技术文档相去甚远。
+话虽这么说，权威的资料当然还是官方的，建议先仔细读一遍，不懂的再往下读：http://docs.unity3d.com/Manual/UISystem.html
+网上的教程大多泛泛而谈，就不吐槽了。好">
+<meta property="og:image" content="http://www.xclouder.com/images/585ba00d8b9a20380a69c5cb2ef4e9dad90bb62b.png">
+<meta property="og:image" content="http://www.xclouder.com/images/63d987fd54c5c5cec135c90b92d2ccc735d88190.gif">
+<meta property="og:image" content="http://www.xclouder.com/images/3f2a5e9f2e6b27eb58aaf7490d818158492f1d1a.gif">
+<meta property="og:image" content="http://www.xclouder.com/images/164d81f4bdb29635f2db9aff5e4141104e005c60.gif">
+<meta property="og:image" content="http://www.xclouder.com/images/fd56ce926885f0c5a360c9e8e5e6bba9514b88bc.gif">
+<meta property="og:image" content="http://www.xclouder.com/images/dd5e601d24262b7a4c96cce3772ee9821022da0a.png">
+<meta property="og:image" content="http://www.xclouder.com/images/968a79f838772208f234e3b9b58ae411414e9909.png">
+<meta property="og:image" content="http://www.xclouder.com/images/3fc8baa8e7f0d0910d79b81068414bc2f47d0079.png">
+<meta property="og:image" content="http://www.xclouder.com/images/451585ad80225ad3615a2f2ceffc30764e06d8a9.png">
+<meta property="og:image" content="http://www.xclouder.com/images/f2fdb1def57b3a778f8685c32bf903e15cefff01.png">
+<meta property="og:image" content="http://www.xclouder.com/images/d3ad3d6746b850735662f220087a207d9a42d0ef.png">
+<meta property="og:image" content="http://www.xclouder.com/images/ca6bd7ee124216a8f46a70cf046eac084f3d58eb.png">
+<meta property="og:updated_time" content="2016-04-08T18:49:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="uGUI学习笔记">
+<meta name="twitter:description" content="看Unity3D文档像看国内教课书一样，一些概念，不懂的时候看还是不懂，明白了以后再看，好像也没有说错。好几个做Unity3D的朋友跟我吐槽过U3D的文档质量，相比Apple贴心的技术文档相去甚远。
+话虽这么说，权威的资料当然还是官方的，建议先仔细读一遍，不懂的再往下读：http://docs.unity3d.com/Manual/UISystem.html
+网上的教程大多泛泛而谈，就不吐槽了。好">
+<meta name="twitter:image" content="http://www.xclouder.com/images/585ba00d8b9a20380a69c5cb2ef4e9dad90bb62b.png">
   
-    <meta property="og:image" content="undefined"/>
+    <link rel="alternative" href="/atom.xml" title="xClouder" type="application/atom+xml">
   
-
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="xClouder" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   
-
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
 </head>
-
-
 <body>
-  <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">xClouder</a></h1>
-  <h2><a href="/"></a></h2>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">xClouder</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Home">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">前端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/xclouder" title="github">github</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AutoLayout/" style="font-size: 10px;">AutoLayout</a> <a href="/tags/Glider/" style="font-size: 10px;">Glider</a> <a href="/tags/Sublime/" style="font-size: 10px;">Sublime</a> <a href="/tags/hpbar/" style="font-size: 10px;">hpbar</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/uGUI/" style="font-size: 10px;">uGUI</a> <a href="/tags/哲学/" style="font-size: 10px;">哲学</a> <a href="/tags/重构/" style="font-size: 10px;">重构</a>
+                    </div>
+                </section>
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">一双手爱上了键盘，不管是屏幕中的代码，还是黑白键上的音符，那些都是指尖追求的艺术</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
 </div>
-<nav id="main-nav" class="alignright">
-  <ul>
-    
-      <li><a href="/">Home</a></li>
-    
-      <li><a href="/archives">Archives</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">xClouder</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">xClouder</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/Home">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">前端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/xclouder" title="github">github</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
 </nav>
-<div class="clearfix"></div></header>
-  <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+      <div class="body-wrap"><article id="post-uGUI-note" class="article article-type-post" itemscope itemprop="blogPost">
   
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-04-06T23:20:21.000Z"><a href="/2015/04/07/uGUI-note/">2015-04-07</a></time>
-      
-      
+    <div class="article-meta">
+      <a href="/2015/04/07/uGUI-note/" class="article-date">
+      <time datetime="2015-04-06T23:20:21.000Z" itemprop="datePublished">2015-04-07</time>
+</a>
+    </div>
   
-    <h1 class="title">uGUI学习笔记</h1>
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      uGUI学习笔记
+    </h1>
   
 
-    </header>
-    <div class="entry">
+      </header>
       
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Unity3D/">Unity3D</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uGUI/">uGUI</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
         <p>看Unity3D文档像看国内教课书一样，一些概念，不懂的时候看还是不懂，明白了以后再看，好像也没有说错。好几个做Unity3D的朋友跟我吐槽过U3D的文档质量，相比Apple贴心的技术文档相去甚远。</p>
 <p>话虽这么说，权威的资料当然还是官方的，建议先仔细读一遍，不懂的再往下读：<br><a href="http://docs.unity3d.com/Manual/UISystem.html" target="_blank" rel="external">http://docs.unity3d.com/Manual/UISystem.html</a></p>
 <p>网上的教程大多泛泛而谈，就不吐槽了。好在还找到了一篇比较好的解读，在此谢谢作者白猫。文章链接在下面<br><a href="http://www.cnblogs.com/whitecat/p/4159815.html" target="_blank" rel="external">http://www.cnblogs.com/whitecat/p/4159815.html</a></p>
 <p>uGUI里面AutoLayout比较特别，我就此详细描述一下，希望能减少“教科书”的理解障碍。</p>
-<h1 id="RectTransform的理解">RectTransform的理解</h1><p>UI元素有专门的RectTransform组件来描述元素的几何信息，继承于Transform，Inspector中其属性如下图。</p>
+<a id="more"></a>
+<p>#RectTransform的理解<br>UI元素有专门的RectTransform组件来描述元素的几何信息，继承于Transform，Inspector中其属性如下图。</p>
 <p><img src="/images/585ba00d8b9a20380a69c5cb2ef4e9dad90bb62b.png" alt="RectTransform属性"></p>
-<h2 id="Anchors，锚点">Anchors，锚点</h2><p>我们首先需要认识Anchors。官网上的图片很好表达了Andhors的功能，请恕我实践下拿来主义。</p>
+<p>##Anchors，锚点<br>我们首先需要认识Anchors。官网上的图片很好表达了Andhors的功能，请恕我实践下拿来主义。</p>
 <p><img src="/images/63d987fd54c5c5cec135c90b92d2ccc735d88190.gif" alt="锚点全在中间的情况"></p>
 <p><img src="/images/3f2a5e9f2e6b27eb58aaf7490d818158492f1d1a.gif" alt="锚点全在右下角的情况"></p>
 <p><img src="/images/164d81f4bdb29635f2db9aff5e4141104e005c60.gif" alt="锚点在两个角的情况"></p>
@@ -80,7 +271,7 @@
 <p><img src="/images/f2fdb1def57b3a778f8685c32bf903e15cefff01.png" alt="锚点不在一起的时候，Inspector中变化3"></p>
 <p>Anchors的Min和Max分别是正规化的值(从0到1)，表示占父RectTransform的百分比，下图中AnchorMin=(0.1,0.1)  AnchorMax=(0.9,0.9)</p>
 <p><img src="/images/d3ad3d6746b850735662f220087a207d9a42d0ef.png" alt="AnchorMin、AnchorMax"></p>
-<h2 id="Pivot，UI的中心点">Pivot，UI的中心点</h2><p>UI元素的旋转和缩放是围绕pivot进行的。RectTransform组件中，Pivot属性是一个正规化的二维向量，用来描述中心点在本身矩形大小的位置。默认值为(0.5, 0.5)，即几何中心。</p>
+<p>##Pivot，UI的中心点<br>UI元素的旋转和缩放是围绕pivot进行的。RectTransform组件中，Pivot属性是一个正规化的二维向量，用来描述中心点在本身矩形大小的位置。默认值为(0.5, 0.5)，即几何中心。</p>
 <p>以上是RectTransform可视化的编辑属性，实际上RectTransform类的属性是怎样的？查阅RectTransform的官方文档如下：</p>
 <p><a href="">anchoredPosition</a><br>The position of the pivot of this RectTransform relative to the anchor reference point.</p>
 <p><a href="">anchoredPosition3D</a><br>The 3D position of the pivot of this RectTransform relative to the anchor reference point.</p>
@@ -92,7 +283,7 @@
 <p><a href="">rect</a><br>The calculated rectangle in the local space of the Transform.</p>
 <p><a href="">sizeDelta</a><br>The size of this RectTransform relative to the distances between the anchors.</p>
 <p>乍一看有点费解，这里有必要解释下：</p>
-<h4 id="anchoredPosition">anchoredPosition</h4><p>可以理解为Pivot点相对于Anchor reference点的位置。Anchor reference点，我是这样理解的：当四个anchors点在一起的时候，这个点就是anchor reference点；否则这四个点的中心点就是anchor reference点。<br>照这个推理，anchorMax和anchorMin的值将影响anchoredPosition的值。具体还需要demo研究来确认。[Bugfix]</p>
+<p>####anchoredPosition<br>可以理解为Pivot点相对于Anchor reference点的位置。Anchor reference点，我是这样理解的：当四个anchors点在一起的时候，这个点就是anchor reference点；否则这四个点的中心点就是anchor reference点。<br>照这个推理，anchorMax和anchorMin的值将影响anchoredPosition的值。具体还需要demo研究来确认。[Bugfix]</p>
 <p>但可以确定的是，当一个UI元素不需要自动拉伸行为时，用anchoredPosition + sizeDelta来设置位置和大小是比较方便的方法。</p>
 <p>anchorMax、anchorMin和Inspector中的意义一致，需要注意的是，当UI元素不需要自动拉伸时，AnchorMax和AnchorMin是相等的。<br><img src="/images/ca6bd7ee124216a8f46a70cf046eac084f3d58eb.png" alt="AnchorMin与AnchorMax"></p>
 <p>UI元素需要自动拉伸时，使用anchorMax、anchorMin + offsetMax、offsetMin来设置UI的位置及大小会比较方便。<br>其中，anchorMax.x == anchorMin.x，height会自动拉伸，width固定不变。<br>anchorMax.y == anchorMin.y，width会自动拉伸，height固定不变。</p>
@@ -100,162 +291,269 @@
 
       
     </div>
-    <footer>
-      
-        
+    
+  </div>
   
-  <div class="categories">
-    <a href="/categories/Unity3D/">Unity3D</a>
-  </div>
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2015/04/07/uGUI-note/">uGUI学习笔记</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 xClouder 的个人博客">xClouder</a></p>
+        <p><span>发布时间:</span>2015年04月07日 - 07时20分</p>
+        <p><span>最后更新:</span>2016年04月09日 - 02时49分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2015/04/07/uGUI-note/" title="uGUI学习笔记">http://www.xclouder.com/2015/04/07/uGUI-note/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://www.xclouder.com/2015/04/07/uGUI-note/　　作者: xClouder" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
-        
+
+
+<nav id="article-nav">
   
-  <div class="tags">
-    <a href="/tags/uGUI/">uGUI</a>
-  </div>
-
+    <a href="/2015/04/08/Glider/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
         
-  <div class="addthis addthis_toolbox addthis_default_style">
-    
-      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-    
-    
-      <a class="addthis_button_tweet"></a>
-    
-    
-      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-    
-    
-      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
-    
-    <a class="addthis_counter addthis_pill_style"></a>
-  </div>
-  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+          如何解决Unity3D协同开发的问题？
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/23/my-first-philosophy/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《你的第一本哲学书》读后感</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
 
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
+  
 </article>
 
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
 
-<section id="comment">
-  <h1 class="title">留言</h1>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
-  
-      <div id="fb-root"></div>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
 </script>
 
-<div class="fb-comments" data-href="http://www.xclouder.com/2015/04/07/uGUI-note/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
-      
-  
-</section>
 
-</div></div>
-    <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜尋">
-    <input type="hidden" name="q" value="site:www.xclouder.com">
-  </form>
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2015/04/07/uGUI-note/" data-title="uGUI学习笔记" data-url="http://www.xclouder.com/2015/04/07/uGUI-note/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xclouder"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
 </div>
 
-  
-<div class="widget tag">
-  <h3 class="title">分類</h3>
-  <ul class="entry">
-  
-    <li><a href="/categories/ML/">ML</a><small>0</small></li>
-  
-    <li><a href="/categories/Unity3D/">Unity3D</a><small>13</small></li>
-  
-    <li><a href="/categories/iOS/">iOS</a><small>1</small></li>
-  
-    <li><a href="/categories/偶有所思/">偶有所思</a><small>1</small></li>
-  
-    <li><a href="/categories/开发工具/">开发工具</a><small>1</small></li>
-  
-    <li><a href="/categories/未分类/">未分类</a><small>0</small></li>
-  
-    <li><a href="/categories/杂感/">杂感</a><small>0</small></li>
-  
-  </ul>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2015/04/08/Glider/" title="上一篇: 如何解决Unity3D协同开发的问题？">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2015/03/23/my-first-philosophy/" title="下一篇: 《你的第一本哲学书》读后感">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2015/07/07/uGUI-AugoLayout/">uGUI之VerticalLayoutGroup详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/04/13/Sublime-for-Unity3D/">Unity3D使用Sublime作为编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/04/08/Glider/">如何解决Unity3D协同开发的问题？</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/04/07/uGUI-note/">uGUI学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/03/23/my-first-philosophy/">《你的第一本哲学书》读后感</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/03/16/jenkins-ios-ci/">jenkins iOS自动构建</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/03/08/hp-bar-follow-player/">让血条跟随角色</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/02/28/apathfinding-extension-2d/">AstarPathFinding Project的2D扩展</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/02/06/-e5-b0-8f-e6-8a-80-e5-b7-a7-ef-bc-8c-e8-ae-a9-e9-a2-91-e7-8e-87-e9-99-90-e5-88-b6-e9-80-bb-e8-be-91-e6-9b-b4-e4-bc-98-e9-9b-85/">小技巧，让频率限制逻辑更优雅</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/01/13/-e5-af-bb-e8-b7-af-e7-ae-97-e6-b3-95-e4-bb-8b-e7-bb-8d/">寻路算法介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/12/19/unity3d-e7-bc-96-e8-af-91log-e5-88-86-e6-9e-90/">Unity3d 编译log分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/12/15/unity-e5-87-8f-e5-b0-91-e5-8c-85-e5-a4-a7-e5-b0-8f/">Unity减少包大小</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/12/08/unity-e7-b2-92-e5-ad-90-e6-94-b6-e9-9b-86-e6-95-88-e6-9e-9c/">unity粒子收集效果</a></li><li class="post-list-item"><a class="post-list-link" href="/2013/01/21/-e5-88-86-e4-ba-ab-e4-b8-80-e4-b8-aaruby-e7-89-88-e7-9a-84apn-e6-8e-a8-e9-80-81-e5-b7-a5-e5-85-b7/">分享一个ruby版的APN推送工具</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
 </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2016 xClouder
+            </div>
+            <div class="footer-right">
+                <!--<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman-->
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 21;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
 
 
-  
-<div class="widget tag">
-  <h3 class="title">標籤</h3>
-  <ul class="entry">
-  
-    <li><a href="/tags/Animator/">Animator</a><small>1</small></li>
-  
-    <li><a href="/tags/AutoLayout/">AutoLayout</a><small>1</small></li>
-  
-    <li><a href="/tags/Glider/">Glider</a><small>1</small></li>
-  
-    <li><a href="/tags/NGUI/">NGUI</a><small>1</small></li>
-  
-    <li><a href="/tags/Sprite/">Sprite</a><small>1</small></li>
-  
-    <li><a href="/tags/Sublime/">Sublime</a><small>1</small></li>
-  
-    <li><a href="/tags/hpbar/">hpbar</a><small>1</small></li>
-  
-    <li><a href="/tags/jenkins/">jenkins</a><small>1</small></li>
-  
-    <li><a href="/tags/uGUI/">uGUI</a><small>1</small></li>
-  
-    <li><a href="/tags/哲学/">哲学</a><small>1</small></li>
-  
-    <li><a href="/tags/重构/">重构</a><small>1</small></li>
-  
-  </ul>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
 </div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
 
-</aside>
-    <div class="clearfix"></div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
   </div>
-  <footer id="footer" class="inner"><div class="alignleft">
-  
-  &copy; 2015 xClouder
-  
-</div>
-<div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-
-
-<script type="text/javascript">
-var disqus_shortname = 'xclouder';
-
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
-</script>
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
-
 </body>
 </html>
